@@ -1,7 +1,9 @@
 (ns vald-client-clj.core
+  (:refer-clojure :exclude [update remove])
   (:import
    [org.vdaas.vald ValdGrpc ValdGrpc$ValdStub ValdGrpc$ValdBlockingStub]
-   [org.vdaas.vald.payload Object$ID Object$Vector Search$Request Search$Config]
+   [org.vdaas.vald.payload Object$ID Object$Vector]
+   [org.vdaas.vald.payload Search$Request Search$IDRequest Search$Config]
    [io.grpc ManagedChannelBuilder]))
 
 (defn grpc-channel [host port]
@@ -39,6 +41,12 @@
       (.getResultsList)
       (->> (mapv parse-object-distance))))
 
+(defn parse-meta-vector [meta-vec]
+  {:uuid (.getUuid meta-vec)
+   :meta (.getMeta meta-vec)
+   :vector (.getVectorList meta-vec)
+   :ips (.getIpsList meta-vec)})
+
 (defn exists [client id]
   (let [id (-> (Object$ID/newBuilder)
                (.setId id)
@@ -56,6 +64,15 @@
         (.search req)
         (parse-search-response))))
 
+(defn search-by-id [client id config]
+  (let [req (-> (Search$IDRequest/newBuilder)
+                (.setId id)
+                (.setConfig (->search-config config))
+                (.build))]
+    (-> client
+        (.searchByID req)
+        (parse-search-response))))
+
 (defn insert [client id vector]
   (let [req (-> (Object$Vector/newBuilder)
                 (.setId id)
@@ -63,6 +80,29 @@
                 (.build))]
     (-> client
         (.insert req))))
+
+(defn update [client id vector]
+  (let [req (-> (Object$Vector/newBuilder)
+                (.setId id)
+                (.addAllVector (seq (map float vector)))
+                (.build))]
+    (-> client
+        (.update req))))
+
+(defn remove [client id]
+  (let [id (-> (Object$ID/newBuilder)
+               (.setId id)
+               (.build))]
+    (-> client
+        (.remove id))))
+
+(defn get-object [client id]
+  (let [id (-> (Object$ID/newBuilder)
+               (.setId id)
+               (.build))]
+    (-> client
+        (.getObject id)
+        (parse-meta-vector))))
 
 (comment
   (def client (vald-client "localhost" 8081))
@@ -74,6 +114,8 @@
       (exists "test"))
   (-> client
       (search (rand-vec) {:num 10}))
+  (-> client
+      (search-by-id "test" {:num 10}))
 
   (-> client
       (insert "test" (rand-vec)))
@@ -83,4 +125,7 @@
         (fn [i]
           (-> client
               (insert (str "x" i) (rand-vec))))))
+
+  (-> client
+      (get-object "test"))
 )

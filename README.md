@@ -1,6 +1,6 @@
 # vald-client-clj
 
-A Clojure client library for Vald.
+A Clojure client library for [Vald](https://github.com/vdaas/vald).
 
 ## Usage
 

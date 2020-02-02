@@ -4,6 +4,39 @@ A Clojure client library for [Vald](https://github.com/vdaas/vald).
 
 ## Usage
 
+```clojure
+(require '[vald-client-clj.core :as vald])
+
+;; vald gateway
+(def client
+  (vald/vald-client "localhost" 8081))
+
+;; vald agent
+(def agent-client
+  (vald/agent-client "localhost" 8081))
+;; NOTE:
+;;   gateway and agent have same interfaces.
+;;   These methods can also be used for agent client.
+
+(-> client
+    (vald/stream-insert
+      [{:id "meta1"
+        :vector [0.1 0.2 0.3 0.4 0.5 0.6]}
+       {:id "meta2"
+        :vector [0.2 0.2 0.2 0.2 0.2 0.2]}]))
+
+(-> client
+    (vald/get-object "meta1"))
+
+(-> client
+    (vald/stream-search-by-id ["meta1" "meta2"] {:num 2}))
+
+(-> client
+    (vald/search [0.1 0.2 0.3 0.3 0.3 0.4] {:num 2}))
+
+(vald/close client)
+```
+
 ## License
 
 Copyright © 2020 rinx

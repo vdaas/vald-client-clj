@@ -34,7 +34,11 @@ A Clojure client library for [Vald](https://github.com/vdaas/vald).
 (-> client
     (vald/search [0.1 0.2 0.3 0.3 0.3 0.4] {:num 2}))
 
+(-> agent-client
+    (vald/search [0.1 0.2 0.3 0.3 0.3 0.4] {:num 2}))
+
 (vald/close client)
+(vald/close agent-client)
 ```
 
 ## License

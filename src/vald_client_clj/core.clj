@@ -1,11 +1,14 @@
 (ns vald-client-clj.core
+  (:require
+   [clojure.core.async :as async :refer [<! >! <!! >!!]])
   (:refer-clojure :exclude [update remove])
   (:import
    [org.vdaas.vald ValdGrpc]
    [org.vdaas.vald.agent AgentGrpc]
-   [org.vdaas.vald.payload Object$ID Object$Vector]
+   [org.vdaas.vald.payload Object$ID Object$IDs Object$Vector Object$Vectors]
    [org.vdaas.vald.payload Search$Request Search$IDRequest Search$Config]
-   [io.grpc ManagedChannelBuilder]))
+   [io.grpc ManagedChannelBuilder]
+   [io.grpc.stub StreamObserver]))
 
 (defn ->search-config [config]
   (-> (Search$Config/newBuilder)
@@ -25,8 +28,8 @@
 (defn meta-vector->map [meta-vec]
   {:uuid (.getUuid meta-vec)
    :meta (.getMeta meta-vec)
-   :vector (.getVectorList meta-vec)
-   :ips (.getIpsList meta-vec)})
+   :vector (seq (.getVectorList meta-vec))
+   :ips (seq (.getIpsList meta-vec))})
 
 (defn parse-search-response [res]
   (-> res
@@ -38,66 +41,270 @@
   (exists [this id])
   (search [this vector config])
   (search-by-id [this id config])
+  (stream-search [this vectors config])
+  (stream-search-by-id [this ids config])
   (insert [this id vector])
+  (stream-insert [this vectors])
+  (multi-insert [this vectors])
   (update [this id vector])
+  (stream-update [this vectors])
+  (multi-update [this vectors])
   (remove-id [this id])
-  (get-object [this id]))
+  (stream-remove [this ids])
+  (multi-remove [this ids])
+  (get-object [this id])
+  (stream-get-object [this ids]))
 
-(defrecord Client [channel stub]
+(defrecord Client [channel stub async-stub]
   IClient
   (close [this]
-    (-> channel
-        (.shutdown)))
+    (when (false? (.isShutdown channel))
+      (-> channel
+          (.shutdown))))
   (exists [this id]
-    (let [id (-> (Object$ID/newBuilder)
-                 (.setId id)
-                 (.build))]
-      (-> stub
-          (.exists id)
-          (object-id->map))))
+    (when (false? (.isShutdown channel))
+      (let [id (-> (Object$ID/newBuilder)
+                   (.setId id)
+                   (.build))]
+        (-> stub
+            (.exists id)
+            (object-id->map)))))
   (search [this vector config]
-    (let [req (-> (Search$Request/newBuilder)
-                  (.addAllVector (seq (map float vector)))
-                  (.setConfig (->search-config config))
-                  (.build))]
-      (-> stub
-          (.search req)
-          (parse-search-response))))
+    (when (false? (.isShutdown channel))
+      (let [req (-> (Search$Request/newBuilder)
+                    (.addAllVector (seq (map float vector)))
+                    (.setConfig (->search-config config))
+                    (.build))]
+        (-> stub
+            (.search req)
+            (parse-search-response)))))
   (search-by-id [this id config]
-    (let [req (-> (Search$IDRequest/newBuilder)
-                  (.setId id)
-                  (.setConfig (->search-config config))
-                  (.build))]
-      (-> stub
-          (.searchByID req)
-          (parse-search-response))))
+    (when (false? (.isShutdown channel))
+      (let [req (-> (Search$IDRequest/newBuilder)
+                    (.setId id)
+                    (.setConfig (->search-config config))
+                    (.build))]
+        (-> stub
+            (.searchByID req)
+            (parse-search-response)))))
+  (stream-search [this vectors config]
+    (when (false? (.isShutdown channel))
+      (let [ch (async/chan)
+            config (->search-config config)
+            reqs (->> vectors
+                      (mapv #(-> (Search$Request/newBuilder)
+                                 (.addAllVector (seq (map float %)))
+                                 (.setConfig config)
+                                 (.build))))
+            observer (-> async-stub
+                         (.streamSearch
+                          (reify StreamObserver
+                            (onNext [this res]
+                              (->> (parse-search-response res)
+                                   (async/put! ch)))
+                            (onError [this throwable])
+                            (onCompleted [this]
+                              (async/close! ch)))))]
+        (async/go
+          (->> reqs
+               (map #(-> observer
+                         (.onNext %)))
+               (doall))
+          (-> observer
+              (.onCompleted)))
+        (->> ch
+             (async/reduce conj [])
+             (<!!)))))
+  (stream-search-by-id [this ids config]
+    (when (false? (.isShutdown channel))
+      (let [ch (async/chan)
+            config (->search-config config)
+            reqs (->> ids
+                      (mapv #(-> (Search$IDRequest/newBuilder)
+                                 (.setId %)
+                                 (.setConfig config)
+                                 (.build))))
+            observer (-> async-stub
+                         (.streamSearchByID
+                          (reify StreamObserver
+                            (onNext [this res]
+                              (->> (parse-search-response res)
+                                   (async/put! ch)))
+                            (onError [this throwable])
+                            (onCompleted [this]
+                              (async/close! ch)))))]
+        (async/go
+          (->> reqs
+               (map #(-> observer
+                         (.onNext %)))
+               (doall))
+          (-> observer
+              (.onCompleted)))
+        (->> ch
+             (async/reduce conj [])
+             (<!!)))))
   (insert [this id vector]
-    (let [req (-> (Object$Vector/newBuilder)
-                  (.setId id)
-                  (.addAllVector (seq (map float vector)))
-                  (.build))]
-      (-> stub
-          (.insert req))))
+    (when (false? (.isShutdown channel))
+      (let [req (-> (Object$Vector/newBuilder)
+                    (.setId id)
+                    (.addAllVector (seq (map float vector)))
+                    (.build))]
+        (-> stub
+            (.insert req)))))
+  (stream-insert [this vectors]
+    (when (false? (.isShutdown channel))
+      (let [ch (async/chan)
+            reqs (->> vectors
+                      (mapv #(-> (Object$Vector/newBuilder)
+                                 (.setId (:id %))
+                                 (.addAllVector (seq (map float (:vector %))))
+                                 (.build))))
+            observer (-> async-stub
+                         (.streamInsert
+                          (reify StreamObserver
+                            (onNext [this res]
+                              (async/put! ch res))
+                            (onError [this throwable])
+                            (onCompleted [this]
+                              (async/close! ch)))))]
+        (async/go
+          (->> reqs
+               (map #(-> observer
+                         (.onNext %)))
+               (doall))
+          (-> observer
+              (.onCompleted)))
+        (->> ch
+             (async/reduce conj [])
+             (<!!)))))
+  (multi-insert [this vectors]
+    (when (false? (.isShutdown channel))
+      (let [vecs (->> vectors
+                      (map #(-> (Object$Vector/newBuilder)
+                                (.setId (:id %))
+                                (.addAllVector (seq (map float (:vector %))))
+                                (.build))))
+            req (-> (Object$Vectors/newBuilder)
+                    (.addAllVectors vecs))]
+        (-> stub
+            (.multiInsert req)))))
   (update [this id vector]
-    (let [req (-> (Object$Vector/newBuilder)
-                  (.setId id)
-                  (.addAllVector (seq (map float vector)))
-                  (.build))]
-      (-> stub
-          (.update req))))
+    (when (false? (.isShutdown channel))
+      (let [req (-> (Object$Vector/newBuilder)
+                    (.setId id)
+                    (.addAllVector (seq (map float vector)))
+                    (.build))]
+        (-> stub
+            (.update req)))))
+  (stream-update [this vectors]
+    (when (false? (.isShutdown channel))
+      (let [ch (async/chan)
+            reqs (->> vectors
+                      (mapv #(-> (Object$Vector/newBuilder)
+                                 (.setId (:id %))
+                                 (.addAllVector (seq (map float (:vector %))))
+                                 (.build))))
+            observer (-> async-stub
+                         (.streamUpdate
+                          (reify StreamObserver
+                            (onNext [this res]
+                              (async/put! ch res))
+                            (onError [this throwable])
+                            (onCompleted [this]
+                              (async/close! ch)))))]
+        (async/go
+          (->> reqs
+               (map #(-> observer
+                         (.onNext %)))
+               (doall))
+          (-> observer
+              (.onCompleted)))
+        (->> ch
+             (async/reduce conj [])
+             (<!!)))))
+  (multi-update [this vectors]
+    (when (false? (.isShutdown channel))
+      (let [vecs (->> vectors
+                      (map #(-> (Object$Vector/newBuilder)
+                                (.setId (:id %))
+                                (.addAllVector (seq (map float (:vector %))))
+                                (.build))))
+            req (-> (Object$Vectors/newBuilder)
+                    (.addAllVectors vecs))]
+        (-> stub
+            (.multiUpdate req)))))
   (remove-id [this id]
-    (let [id (-> (Object$ID/newBuilder)
-                 (.setId id)
-                 (.build))]
-      (-> stub
-          (.remove id))))
+    (when (false? (.isShutdown channel))
+      (let [id (-> (Object$ID/newBuilder)
+                   (.setId id)
+                   (.build))]
+        (-> stub
+            (.remove id)))))
+  (stream-remove [this ids]
+    (when (false? (.isShutdown channel))
+      (let [ch (async/chan)
+            reqs (->> ids
+                      (mapv #(-> (Object$ID/newBuilder)
+                                 (.setId %)
+                                 (.build))))
+            observer (-> async-stub
+                         (.streamRemove
+                          (reify StreamObserver
+                            (onNext [this res]
+                              (async/put! ch res))
+                            (onError [this throwable])
+                            (onCompleted [this]
+                              (async/close! ch)))))]
+        (async/go
+          (->> reqs
+               (map #(-> observer
+                         (.onNext %)))
+               (doall))
+          (-> observer
+              (.onCompleted)))
+        (->> ch
+             (async/reduce conj [])
+             (<!!)))))
+  (multi-remove [this ids]
+    (when (false? (.isShutdown channel))
+      (let [req (-> (Object$IDs/newBuilder)
+                    (.addAllID ids))]
+        (-> stub
+            (.multiRemove req)))))
   (get-object [this id]
-    (let [id (-> (Object$ID/newBuilder)
-                 (.setId id)
-                 (.build))]
-      (-> stub
-          (.getObject id)
-          (meta-vector->map)))))
+    (when (false? (.isShutdown channel))
+      (let [id (-> (Object$ID/newBuilder)
+                   (.setId id)
+                   (.build))]
+        (-> stub
+            (.getObject id)
+            (meta-vector->map)))))
+  (stream-get-object [this ids]
+    (when (false? (.isShutdown channel))
+      (let [ch (async/chan)
+            reqs (->> ids
+                      (mapv #(-> (Object$ID/newBuilder)
+                                 (.setId %)
+                                 (.build))))
+            observer (-> async-stub
+                         (.streamGetObject
+                          (reify StreamObserver
+                            (onNext [this res]
+                              (->> (meta-vector->map res)
+                                   (async/put! ch)))
+                            (onError [this throwable])
+                            (onCompleted [this]
+                              (async/close! ch)))))]
+        (async/go
+          (->> reqs
+               (map #(-> observer
+                         (.onNext %)))
+               (doall))
+          (-> observer
+              (.onCompleted)))
+        (->> ch
+             (async/reduce conj [])
+             (<!!))))))
 
 (defn grpc-channel [host port]
   (-> (ManagedChannelBuilder/forAddress host port)
@@ -118,13 +325,15 @@
 
 (defn vald-client [host port]
   (let [channel (grpc-channel host port)
-        stub (blocking-stub channel)]
-    (->Client channel stub)))
+        stub (blocking-stub channel)
+        async-stub (async-stub channel)]
+    (->Client channel stub async-stub)))
 
 (defn agent-client [host port]
   (let [channel (grpc-channel host port)
-        stub (agent-blocking-stub channel)]
-    (->Client channel stub)))
+        stub (agent-blocking-stub channel)
+        async-stub (agent-async-stub channel)]
+    (->Client channel stub async-stub)))
 
 (comment
   (def client (vald-client "localhost" 8081))
@@ -141,15 +350,28 @@
   (-> client
       (search-by-id "test" {:num 10}))
 
+  (println
+   (stream-search client (take 10 (repeatedly #(rand-vec))) {:num 10}))
+  (println
+   (stream-search-by-id client ["test" "zz1" "zz3"] {:num 3}))
+  (println
+   (stream-get-object client ["zz1" "zz3"]))
+
   (-> client
       (insert "test" (rand-vec)))
 
-  (->> (take 100 (range))
+  (->> (take 300 (range))
        (map
         (fn [i]
           (-> client
-              (insert (str "x" i) (rand-vec))))))
+              (insert (str "zz" i) (rand-vec))))))
+
+  (let [vectors (->> (take 10 (range))
+                     (map
+                      (fn [i]
+                        {:id (str "a" i)
+                         :vector (rand-vec)})))]
+    (stream-insert client vectors))
 
   (-> client
-      (get-object "test"))
-)
+      (get-object "zz3")))

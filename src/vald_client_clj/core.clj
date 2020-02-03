@@ -1,6 +1,4 @@
 (ns vald-client-clj.core
-  (:require
-   [clojure.core.async :as async :refer [<! >! <!! >!!]])
   (:refer-clojure :exclude [update remove])
   (:import
    [org.vdaas.vald ValdGrpc]
@@ -89,7 +87,8 @@
             (parse-search-response)))))
   (stream-search [this vectors config]
     (when (false? (.isShutdown channel))
-      (let [ch (async/chan)
+      (let [pm (promise)
+            am (atom [])
             config (->search-config config)
             reqs (->> vectors
                       (mapv #(-> (Search$Request/newBuilder)
@@ -101,23 +100,22 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (->> (parse-search-response res)
-                                   (async/put! ch)))
-                            (onError [this throwable])
+                                   (swap! am conj)))
+                            (onError [this throwable]
+                              (deliver pm @am))
                             (onCompleted [this]
-                              (async/close! ch)))))]
-        (async/go
-          (->> reqs
-               (map #(-> observer
-                         (.onNext %)))
-               (doall))
-          (-> observer
-              (.onCompleted)))
-        (->> ch
-             (async/reduce conj [])
-             (<!!)))))
+                              (deliver pm @am)))))]
+        (->> reqs
+             (map #(-> observer
+                       (.onNext %)))
+             (doall))
+        (-> observer
+            (.onCompleted))
+        @pm)))
   (stream-search-by-id [this ids config]
     (when (false? (.isShutdown channel))
-      (let [ch (async/chan)
+      (let [pm (promise)
+            am (atom [])
             config (->search-config config)
             reqs (->> ids
                       (mapv #(-> (Search$IDRequest/newBuilder)
@@ -129,20 +127,18 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (->> (parse-search-response res)
-                                   (async/put! ch)))
-                            (onError [this throwable])
+                                   (swap! am conj)))
+                            (onError [this throwable]
+                              (deliver pm @am))
                             (onCompleted [this]
-                              (async/close! ch)))))]
-        (async/go
-          (->> reqs
-               (map #(-> observer
-                         (.onNext %)))
-               (doall))
-          (-> observer
-              (.onCompleted)))
-        (->> ch
-             (async/reduce conj [])
-             (<!!)))))
+                              (deliver pm @am)))))]
+        (->> reqs
+             (map #(-> observer
+                       (.onNext %)))
+             (doall))
+        (-> observer
+            (.onCompleted))
+        @pm)))
   (insert [this id vector]
     (when (false? (.isShutdown channel))
       (let [req (-> (Object$Vector/newBuilder)
@@ -153,7 +149,8 @@
             (.insert req)))))
   (stream-insert [this vectors]
     (when (false? (.isShutdown channel))
-      (let [ch (async/chan)
+      (let [pm (promise)
+            am (atom [])
             reqs (->> vectors
                       (mapv #(-> (Object$Vector/newBuilder)
                                  (.setId (:id %))
@@ -163,20 +160,18 @@
                          (.streamInsert
                           (reify StreamObserver
                             (onNext [this res]
-                              (async/put! ch res))
-                            (onError [this throwable])
+                              (swap! am conj res))
+                            (onError [this throwable]
+                              (deliver pm @am))
                             (onCompleted [this]
-                              (async/close! ch)))))]
-        (async/go
-          (->> reqs
-               (map #(-> observer
-                         (.onNext %)))
-               (doall))
-          (-> observer
-              (.onCompleted)))
-        (->> ch
-             (async/reduce conj [])
-             (<!!)))))
+                              (deliver pm @am)))))]
+        (->> reqs
+             (map #(-> observer
+                       (.onNext %)))
+             (doall))
+        (-> observer
+            (.onCompleted))
+        @pm)))
   (multi-insert [this vectors]
     (when (false? (.isShutdown channel))
       (let [vecs (->> vectors
@@ -198,7 +193,8 @@
             (.update req)))))
   (stream-update [this vectors]
     (when (false? (.isShutdown channel))
-      (let [ch (async/chan)
+      (let [pm (promise)
+            am (atom [])
             reqs (->> vectors
                       (mapv #(-> (Object$Vector/newBuilder)
                                  (.setId (:id %))
@@ -208,20 +204,18 @@
                          (.streamUpdate
                           (reify StreamObserver
                             (onNext [this res]
-                              (async/put! ch res))
-                            (onError [this throwable])
+                              (swap! am conj res))
+                            (onError [this throwable]
+                              (deliver pm @am))
                             (onCompleted [this]
-                              (async/close! ch)))))]
-        (async/go
-          (->> reqs
-               (map #(-> observer
-                         (.onNext %)))
-               (doall))
-          (-> observer
-              (.onCompleted)))
-        (->> ch
-             (async/reduce conj [])
-             (<!!)))))
+                              (deliver pm @am)))))]
+        (->> reqs
+             (map #(-> observer
+                       (.onNext %)))
+             (doall))
+        (-> observer
+            (.onCompleted))
+        @pm)))
   (multi-update [this vectors]
     (when (false? (.isShutdown channel))
       (let [vecs (->> vectors
@@ -242,7 +236,8 @@
             (.remove id)))))
   (stream-remove [this ids]
     (when (false? (.isShutdown channel))
-      (let [ch (async/chan)
+      (let [pm (promise)
+            am (atom [])
             reqs (->> ids
                       (mapv #(-> (Object$ID/newBuilder)
                                  (.setId %)
@@ -251,20 +246,18 @@
                          (.streamRemove
                           (reify StreamObserver
                             (onNext [this res]
-                              (async/put! ch res))
-                            (onError [this throwable])
+                              (swap! am conj res))
+                            (onError [this throwable]
+                              (deliver pm @am))
                             (onCompleted [this]
-                              (async/close! ch)))))]
-        (async/go
-          (->> reqs
-               (map #(-> observer
-                         (.onNext %)))
-               (doall))
-          (-> observer
-              (.onCompleted)))
-        (->> ch
-             (async/reduce conj [])
-             (<!!)))))
+                              (deliver pm @am)))))]
+        (->> reqs
+             (map #(-> observer
+                       (.onNext %)))
+             (doall))
+        (-> observer
+            (.onCompleted))
+        @pm)))
   (multi-remove [this ids]
     (when (false? (.isShutdown channel))
       (let [req (-> (Object$IDs/newBuilder)
@@ -281,7 +274,8 @@
             (meta-vector->map)))))
   (stream-get-object [this ids]
     (when (false? (.isShutdown channel))
-      (let [ch (async/chan)
+      (let [pm (promise)
+            am (atom [])
             reqs (->> ids
                       (mapv #(-> (Object$ID/newBuilder)
                                  (.setId %)
@@ -291,20 +285,18 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (->> (meta-vector->map res)
-                                   (async/put! ch)))
-                            (onError [this throwable])
+                                   (swap! am conj)))
+                            (onError [this throwable]
+                              (deliver pm @am))
                             (onCompleted [this]
-                              (async/close! ch)))))]
-        (async/go
-          (->> reqs
-               (map #(-> observer
-                         (.onNext %)))
-               (doall))
-          (-> observer
-              (.onCompleted)))
-        (->> ch
-             (async/reduce conj [])
-             (<!!))))))
+                              (deliver pm @am)))))]
+        (->> reqs
+             (map #(-> observer
+                       (.onNext %)))
+             (doall))
+        (-> observer
+            (.onCompleted))
+        @pm))))
 
 (defn grpc-channel [host port]
   (-> (ManagedChannelBuilder/forAddress host port)

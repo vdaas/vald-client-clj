@@ -13,7 +13,8 @@
              {:source-paths ["cmd"]
               :dependencies [[org.clojure/tools.cli "0.4.2"]
                              [metosin/jsonista "0.2.2"]
-                             [camel-snake-kebab "0.4.0"]]
+                             [camel-snake-kebab "0.4.0"]
+                             [io.quarkus/quarkus-grpc "1.26.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :main vald-client-clj.cmd
@@ -36,7 +37,8 @@
              {:source-paths ["cmd"]
               :dependencies [[org.clojure/tools.cli "0.4.2"]
                              [metosin/jsonista "0.2.2"]
-                             [camel-snake-kebab "0.4.0"]]
+                             [camel-snake-kebab "0.4.0"]
+                             [io.quarkus/quarkus-grpc "1.26.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :main vald-client-clj.cmd

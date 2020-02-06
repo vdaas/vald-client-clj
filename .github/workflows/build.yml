@@ -10,6 +10,7 @@ on:
       - 'v*.*.*-*'
   pull_request:
     paths:
+      - .github/**
       - src/**
       - cmd/**
       - project.clj
@@ -22,7 +23,7 @@ jobs:
       - uses: rinx/setup-graalvm-ce@v0.0.1
         with:
           graalvm-version: 19.3.1
-          java-version: java8
+          java-version: java11
       - name: Install dependencies
         run: |
           gu install native-image
@@ -63,7 +64,7 @@ jobs:
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
           GRAALVM_VERSION: 19.3.1
-          JAVA_VERSION: java8
+          JAVA_VERSION: java11
       - name: Install dependencies
         run: |
           brew install leiningen

@@ -1,0 +1,78 @@
+name: Build native image
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*.*.*'
+      - 'v*.*.*'
+      - '*.*.*-*'
+      - 'v*.*.*-*'
+  pull_request:
+    paths:
+      - src/**
+      - cmd/**
+      - project.clj
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: rinx/setup-graalvm-ce@v0.0.1
+        with:
+          graalvm-version: 19.3.1
+          java-version: java8
+      - name: Install dependencies
+        run: |
+          gu install native-image
+          curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+          chmod a+x lein
+          sudo apt-get update && sudo apt-get install -y upx
+      - name: Build native-image
+        run: |
+          ./lein with-profile +cmd native-image
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: valdcli-linux
+          path: ./valdcli
+      - name: Build static native-image
+        run: |
+          ./lein with-profile +static native-image
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: valdcli-linux-static
+          path: ./valdcli
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install GraalVM
+        run: |
+          TMP_GRAALVM_HOME=/tmp/graalvm
+          GRAALVM_HOME=/tmp/graalvm/Contents/Home
+          GRAALVM_TGZ_URI="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-${JAVA_VERSION}-darwin-amd64-${GRAALVM_VERSION}.tar.gz"
+          curl -sL $GRAALVM_TGZ_URI --output graalvm.tar.gz
+          mkdir -p $TMP_GRAALVM_HOME
+          tar -xf graalvm.tar.gz -C $TMP_GRAALVM_HOME --strip-components=1
+          chmod -R a+rwx $TMP_GRAALVM_HOME
+          echo "::set-env name=PATH::$GRAALVM_HOME/bin:$PATH"
+          echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
+          echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
+        env:
+          GRAALVM_VERSION: 19.3.1
+          JAVA_VERSION: java8
+      - name: Install dependencies
+        run: |
+          brew install leiningen
+          gu install native-image
+      - name: Build native-image
+        run: |
+          lein with-profile +cmd native-image
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: valdcli-macos
+          path: ./valdcli

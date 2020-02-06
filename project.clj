@@ -11,7 +11,9 @@
   :repl-options {:init-ns vald-client-clj.core}
   :profiles {:cmd
              {:source-paths ["cmd"]
-              :dependencies [[org.clojure/tools.cli "0.4.2"]]
+              :dependencies [[org.clojure/tools.cli "0.4.2"]
+                             [metosin/jsonista "0.2.2"]
+                             [camel-snake-kebab "0.4.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :main vald-client-clj.cmd
@@ -30,7 +32,27 @@
                       "-J-Xms1g"
                       "-J-Xmx6g"]
                :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}
-             :native-image
+             :static
              {:source-paths ["cmd"]
+              :dependencies [[org.clojure/tools.cli "0.4.2"]
+                             [metosin/jsonista "0.2.2"]
+                             [camel-snake-kebab "0.4.0"]]
+              :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
-              :main vald-client-clj.cmd}})
+              :main vald-client-clj.cmd
+              :native-image
+              {:name "valdcli"
+               :opts ["-H:+ReportExceptionStackTraces"
+                      "-H:Log=registerResource:"
+                      "--enable-url-protocols=http,https"
+                      "--enable-all-security-services"
+                      "--no-fallback"
+                      "--no-server"
+                      "--report-unsupported-elements-at-runtime"
+                      "--initialize-at-build-time"
+                      "--allow-incomplete-classpath"
+                      "--verbose"
+                      "--static"
+                      "-J-Xms1g"
+                      "-J-Xmx6g"]
+               :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}})

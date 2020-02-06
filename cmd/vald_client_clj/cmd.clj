@@ -1,6 +1,7 @@
 (ns vald-client-clj.cmd
   (:require
    [clojure.tools.cli :as cli]
+   [camel-snake-kebab.core :as csk]
    [vald-client-clj.core :as vald])
   (:gen-class))
 
@@ -10,10 +11,16 @@
 
 (defn main
   [{:keys [options summary arguments] :as parsed-result}]
-  (let [cmd (first arguments)]
+  (let [cmd (-> (first arguments)
+                (csk/->kebab-case-keyword))
+        host "localhost"
+        port 8080
+        client (vald/vald-client host port)
+             #_(vald/agent-client host port)]
     (case cmd
       :exists (println :exists)
       :insert (println :insert)
+      :stream-insert (println :stream-insert)
       (throw (Exception. "unknown subcommand")))))
 
 (defn -main [& args]

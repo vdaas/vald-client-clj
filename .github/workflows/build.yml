@@ -20,10 +20,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: rinx/setup-graalvm-ce@v0.0.1
-        with:
-          graalvm-version: 19.3.1
-          java-version: java11
+      - name: Install GraalVM
+        run: |
+          TMP_GRAALVM_HOME=/tmp/graalvm
+          GRAALVM_HOME=/tmp/graalvm/Contents/Home
+          GRAALVM_TGZ_URI="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-${JAVA_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz"
+          curl -sL $GRAALVM_TGZ_URI --output graalvm.tar.gz
+          mkdir -p $TMP_GRAALVM_HOME
+          tar -xf graalvm.tar.gz -C $TMP_GRAALVM_HOME --strip-components=1
+          chmod -R a+rwx $TMP_GRAALVM_HOME
+          echo "::set-env name=PATH::$GRAALVM_HOME/bin:$PATH"
+          echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
+          echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
+        env:
+          GRAALVM_VERSION: 19.3.1
+          JAVA_VERSION: java11
       - name: Install dependencies
         run: |
           gu install native-image
@@ -45,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: valdcli-linux-static
-          path: ./valdcli
+          path: ./target/valdcli
   build-macos:
     runs-on: macos-latest
     steps:
@@ -76,4 +87,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: valdcli-macos
-          path: ./valdcli
+          path: ./target/valdcli

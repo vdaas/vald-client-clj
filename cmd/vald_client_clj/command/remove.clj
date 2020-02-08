@@ -13,4 +13,6 @@
         id (first arguments)]
     (if (or help? (nil? id))
       (println summary)
-      (vald/remove-id client id))))
+      (do
+        (vald/remove-id client id)
+        (println "removed.")))))

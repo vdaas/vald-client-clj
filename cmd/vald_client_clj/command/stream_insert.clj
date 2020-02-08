@@ -23,4 +23,5 @@
                             (util/read-from-stdin))
                         (read-string))]
         (-> client
-            (vald/stream-insert vectors))))))
+            (vald/stream-insert vectors))
+        (println (str "insertd: " (count vectors)))))))

@@ -23,4 +23,5 @@
                         (util/read-from-stdin))
                     (read-string))]
         (-> client
-            (vald/stream-remove ids))))))
+            (vald/stream-remove ids))
+        (println (str "removed: " (count ids)))))))

@@ -23,4 +23,5 @@
       (let [vector (-> (or (second arguments)
                            (util/read-from-stdin))
                        (read-string))]
-        (vald/update client id vector)))))
+        (vald/update client id vector)
+        (println "updated.")))))

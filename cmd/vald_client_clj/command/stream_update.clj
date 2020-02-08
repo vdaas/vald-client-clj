@@ -23,4 +23,5 @@
                             (util/read-from-stdin))
                         (read-string))]
         (-> client
-            (vald/stream-update vectors))))))
+            (vald/stream-update vectors))
+        (println (str "updated: " (count vectors)))))))

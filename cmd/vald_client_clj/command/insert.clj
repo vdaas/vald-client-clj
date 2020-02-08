@@ -23,4 +23,5 @@
       (let [vector (-> (or (second arguments)
                            (util/read-from-stdin))
                        (read-string))]
-        (vald/insert client id vector)))))
+        (vald/insert client id vector)
+        (println "inserted.")))))

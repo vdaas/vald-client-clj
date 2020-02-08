@@ -26,7 +26,7 @@ install/native-image:
 profile/native-image-config: \
 	$(NATIVE_IMAGE_CONFIG_OUTPUT_DIR) \
 	$(TARGET_JAR)
-	- java -agentlib:native-image-agent=config-output-dir=$(NATIVE_IMAGE_CONFIG_OUTPUT_DIR) \
+	- java -agentlib:native-image-agent=config-merge-dir=$(NATIVE_IMAGE_CONFIG_OUTPUT_DIR) \
 	    -jar $(TARGET_JAR) exists test
 	- java -agentlib:native-image-agent=config-merge-dir=$(NATIVE_IMAGE_CONFIG_OUTPUT_DIR) \
 	    -jar $(TARGET_JAR) insert test "[0.1 0.2 0.3 0.4 0.5 0.6]"

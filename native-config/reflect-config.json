@@ -50,6 +50,10 @@
   "name":"io.grpc.util.SecretRoundRobinLoadBalancerProvider$Provider"
 },
 {
+  "name":"io.grpc.stub.ClientCalls$CallToStreamObserverAdapter",
+  "allPublicMethods":true
+},
+{
   "name":"java.net.InetSocketAddress",
   "methods":[{"name":"getHostString","parameterTypes":[] }]
 },

@@ -114,6 +114,14 @@
   "allPublicMethods":true
 },
 {
+  "name":"org.vdaas.vald.payload.Search$Response",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.payload.Backup$MetaVector",
+  "allPublicMethods":true
+},
+{
   "name":"sun.misc.Unsafe",
   "allDeclaredFields":true,
   "methods":[

@@ -5,21 +5,21 @@
 
 (def cli-options
   [["-h" "--help" :id :help?]
-   ["-n" "--num"
+   ["-n" "--num NUMBER"
     :id :num
     :default 10
     :parse-fn #(Integer/parseInt %)]
-   ["-r" "--radius"
+   ["-r" "--radius RADIUS"
     :id :radius
-    :default 0
+    :default 1.0
     :parse-fn #(Float/parseFloat %)]
-   ["-e" "--epsilon"
+   ["-e" "--epsilon EPSILON"
     :id :epsilon
-    :default 0
+    :default 0.1
     :parse-fn #(Float/parseFloat %)]
-   ["-t" "--timeout"
+   ["-t" "--timeout TIMEOUT"
     :id :timeout
-    :default 0
+    :default 100000
     :parse-fn #(Integer/parseInt %)]])
 
 (defn run [client args]

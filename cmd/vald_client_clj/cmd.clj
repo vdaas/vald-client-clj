@@ -65,7 +65,7 @@
                         :in-order true)
         (main))
     (catch Exception e
-      (println (.getMessage e))
+      (.println System/err (.getMessage e))
       (System/exit 1))
     (finally
       (shutdown-agents))))

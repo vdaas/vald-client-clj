@@ -10,10 +10,10 @@
 
 (defn ->search-config [config]
   (-> (Search$Config/newBuilder)
-      (.setNum (or (:num config) 0))
-      (.setRadius (or (:radius config) 0))
-      (.setEpsilon (or (:epsilon config) 0))
-      (.setTimeout (or (:timeout config) 0))
+      (.setNum (or (:num config) 10))
+      (.setRadius (or (:radius config) 1.0))
+      (.setEpsilon (or (:epsilon config) 0.1))
+      (.setTimeout (or (:timeout config) 100000))
       (.build)))
 
 (defn object-id->map [id]

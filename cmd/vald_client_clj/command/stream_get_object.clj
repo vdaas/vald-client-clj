@@ -6,17 +6,22 @@
    [vald-client-clj.util :as util]))
 
 (def cli-options
-  [["-h" "--help" :id :help?]])
+  [["-h" "--help" :id :help?]
+   ["-j" "--json" "read as json"
+    :id :json?]])
 
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help?]} options]
+        {:keys [help? json?]} options
+        read-string (if json?
+                      util/read-json
+                      edn/read-string)]
     (if help?
       (println summary)
       (let [ids (-> (or (first arguments)
                         (util/read-from-stdin))
-                    (edn/read-string))]
+                    (read-string))]
         (-> client
             (vald/stream-get-object ids)
             (println))))))

@@ -7,6 +7,8 @@
 
 (def cli-options
   [["-h" "--help" :id :help?]
+   ["-j" "--json" "read as json"
+    :id :json?]
    ["-n" "--num NUM"
     :id :num
     :default 10
@@ -27,7 +29,10 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? num radius epsilon timeout]} options
+        {:keys [help? json? num radius epsilon timeout]} options
+        read-string (if json?
+                      util/read-json
+                      edn/read-string)
         config {:num num
                 :radius radius
                 :epsilon epsilon
@@ -36,7 +41,7 @@
       (println summary)
       (let [ids (-> (or (first arguments)
                         (util/read-from-stdin))
-                    (edn/read-string))]
+                    (read-string))]
         (-> client
             (vald/stream-search-by-id ids config)
             (println))))))

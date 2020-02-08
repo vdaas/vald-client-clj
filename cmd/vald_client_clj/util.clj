@@ -1,6 +1,7 @@
 (ns vald-client-clj.util
   (:require
-    [clojure.string :as string])
+    [clojure.string :as string]
+    [jsonista.core :as json])
   (:import
     [java.io BufferedReader]))
 
@@ -14,3 +15,6 @@
   (->> (BufferedReader. *in*)
        (line-seq)
        (string/join "\n")))
+
+(defn read-json [s]
+  (json/read-value s))

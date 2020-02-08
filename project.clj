@@ -19,7 +19,7 @@
               :dependencies [[org.clojure/tools.cli "0.4.2"]
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
-                             [metosin/jsonista "0.2.2"]
+                             [metosin/jsonista "0.2.5"]
                              [camel-snake-kebab "0.4.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
@@ -45,7 +45,7 @@
               :dependencies [[org.clojure/tools.cli "0.4.2"]
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
-                             [metosin/jsonista "0.2.2"]
+                             [metosin/jsonista "0.2.5"]
                              [camel-snake-kebab "0.4.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all

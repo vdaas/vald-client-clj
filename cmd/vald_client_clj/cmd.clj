@@ -1,6 +1,7 @@
 (ns vald-client-clj.cmd
   (:require
    [clojure.tools.cli :as cli]
+   [clojure.string :as string]
    [camel-snake-kebab.core :as csk]
    [vald-client-clj.core :as vald]
    [vald-client-clj.command.exists :as command.exists]
@@ -21,7 +22,7 @@
 (set! *warn-on-reflection* true)
 
 (def cli-options
-  [[nil "--help" :id :help?]
+  [[nil "--help" "show usage" :id :help?]
    ["-p" "--port PORT" "Port number"
     :id :port
     :default 8080
@@ -30,14 +31,39 @@
    ["-h" "--host HOST" "Hostname"
     :id :host
     :default "localhost"]
-   ["-a" "--agent" :id :agent?]])
+   ["-a" "--agent" "connect as an agent client" :id :agent?]])
+
+(defn usage [summary]
+  (->> ["Usage: valdcli [OPTIONS] ACTION"
+        ""
+        "Options:"
+        summary
+        ""
+        "Actions:"
+        "  exists"
+        "  insert"
+        "  search"
+        "  search-by-id"
+        "  update"
+        "  remove"
+        "  get-object"
+        "  stream-insert"
+        "  stream-search"
+        "  stream-search-by-id"
+        "  stream-update"
+        "  stream-remove"
+        "  stream-get-object"
+        ""]
+       (string/join "\n")))
 
 (defn main
   [{:keys [options summary arguments errors] :as parsed-result}]
   (let [{:keys [help? port host agent?]} options
         cmd (first arguments)]
     (if (or help? (nil? cmd))
-      (println summary)
+      (-> summary
+          (usage)
+          (println))
       (let [args (rest arguments)
             client (if agent?
                      (vald/agent-client host port)

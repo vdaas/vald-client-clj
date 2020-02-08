@@ -3,7 +3,7 @@
   :url "https://github.com/rinx/vald-client-clj"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [io.grpc/grpc-api "1.27.0"]
                  [io.grpc/grpc-core "1.27.0"
                   :exlusions [io.grpc/grpc-api]]
@@ -20,8 +20,7 @@
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
                              [metosin/jsonista "0.2.2"]
-                             [camel-snake-kebab "0.4.0"]
-                             [com.oracle.substratevm/svm "19.2.1"]]
+                             [camel-snake-kebab "0.4.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :main vald-client-clj.cmd
@@ -47,8 +46,7 @@
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
                              [metosin/jsonista "0.2.2"]
-                             [camel-snake-kebab "0.4.0"]
-                             [com.oracle.substratevm/svm "19.2.1"]]
+                             [camel-snake-kebab "0.4.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :main vald-client-clj.cmd

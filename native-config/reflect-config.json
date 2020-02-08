@@ -78,11 +78,11 @@
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.AgentGrpc$AgentStub",
+  "name":"org.vdaas.vald.agent.AgentGrpc$AgentStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.AgentGrpc$AgentBlockingStub",
+  "name":"org.vdaas.vald.agent.AgentGrpc$AgentBlockingStub",
   "allPublicMethods":true
 },
 {

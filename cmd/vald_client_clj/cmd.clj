@@ -18,6 +18,8 @@
    [vald-client-clj.command.stream-get-object :as command.stream-get-object])
   (:gen-class))
 
+(set! *warn-on-reflection* true)
+
 (def cli-options
   [[nil "--help" :id :help?]
    ["-p" "--port PORT" "Port number"

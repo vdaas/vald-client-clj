@@ -37,4 +37,6 @@
       (let [vector (-> (or (first arguments)
                            (util/read-from-stdin))
                        (edn/read-string))]
-        (vald/search client vector config)))))
+        (-> client
+            (vald/search vector config)
+            (println))))))

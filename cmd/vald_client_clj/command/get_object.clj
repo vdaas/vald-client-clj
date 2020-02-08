@@ -13,4 +13,6 @@
         id (first arguments)]
     (if (or help? (nil? id))
       (println summary)
-      (vald/get-object client id))))
+      (-> client
+          (vald/get-object id)
+          (println)))))

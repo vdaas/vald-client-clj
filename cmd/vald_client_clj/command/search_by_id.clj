@@ -33,4 +33,6 @@
         id (first arguments)]
     (if help?
       (println summary)
-      (vald/search-by-id client id config))))
+      (-> client
+          (vald/search-by-id id config)
+          (println)))))

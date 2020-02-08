@@ -34,7 +34,7 @@ jobs:
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
           GRAALVM_VERSION: 19.3.1
-          JAVA_VERSION: java11
+          JAVA_VERSION: java8
       - name: Install dependencies
         run: |
           gu install native-image
@@ -77,7 +77,7 @@ jobs:
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
           GRAALVM_VERSION: 19.3.1
-          JAVA_VERSION: java11
+          JAVA_VERSION: java8
       - name: Install dependencies
         run: |
           brew install leiningen

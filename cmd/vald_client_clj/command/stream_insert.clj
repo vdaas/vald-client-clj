@@ -24,4 +24,4 @@
                         (read-string))]
         (-> client
             (vald/stream-insert vectors))
-        (println (str "insertd: " (count vectors)))))))
+        (println (str "inserted: " (count vectors)))))))

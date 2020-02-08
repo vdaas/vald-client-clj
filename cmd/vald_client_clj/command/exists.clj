@@ -11,6 +11,6 @@
         {:keys [options summary arguments]} parsed-result
         {:keys [help?]} options
         id (first arguments)]
-    (if help?
+    (if (or help? (nil? id))
       (println summary)
       (vald/exists client id))))

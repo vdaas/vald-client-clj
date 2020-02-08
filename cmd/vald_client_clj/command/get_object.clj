@@ -9,7 +9,8 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help?]} options]
-    (if help?
+        {:keys [help?]} options
+        id (first arguments)]
+    (if (or help? (nil? id))
       (println summary)
-      (println arguments))))
+      (vald/get-object client id))))

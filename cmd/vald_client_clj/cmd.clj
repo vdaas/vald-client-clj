@@ -21,39 +21,40 @@
 (def cli-options
   [[nil "--help" :id :help?]
    ["-p" "--port PORT" "Port number"
+    :id :port
     :default 8080
     :parse-fn #(Integer/parseInt %)
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]
    ["-h" "--host HOST" "Hostname"
+    :id :host
     :default "localhost"]
    ["-a" "--agent" :id :agent?]])
 
 (defn main
   [{:keys [options summary arguments errors] :as parsed-result}]
   (let [{:keys [help? port host agent?]} options
-        cmd (-> (first arguments)
-                (csk/->kebab-case-keyword))
-        args (rest arguments)
-        client (if agent?
-                 (vald/agent-client host port)
-                 (vald/vald-client host port))]
+        cmd (first arguments)]
     (if (or help? (nil? cmd))
       (println summary)
-      (case cmd
-        :exists (command.exists/run client args)
-        :insert (command.insert/run client args)
-        :stream-insert (command.stream-insert/run client args)
-        :search (command.search/run client args)
-        :stream-search (command.stream-search/run client args)
-        :search-by-id (command.search-by-id/run client args)
-        :stream-search-by-id (command.stream-search-by-id/run client args)
-        :update (command.update/run client args)
-        :stream-update (command.stream-update/run client args)
-        :remove (command.remove/run client args)
-        :stream-remove (command.stream-remove/run client args)
-        :get-object (command.get-object/run client args)
-        :stream-get-object (command.stream-get-object/run client args)
-        (throw (Exception. "unknown subcommand"))))))
+      (let [args (rest arguments)
+            client (if agent?
+                     (vald/agent-client host port)
+                     (vald/vald-client host port))]
+        (case (csk/->kebab-case-keyword cmd)
+          :exists (command.exists/run client args)
+          :insert (command.insert/run client args)
+          :stream-insert (command.stream-insert/run client args)
+          :search (command.search/run client args)
+          :stream-search (command.stream-search/run client args)
+          :search-by-id (command.search-by-id/run client args)
+          :stream-search-by-id (command.stream-search-by-id/run client args)
+          :update (command.update/run client args)
+          :stream-update (command.stream-update/run client args)
+          :remove (command.remove/run client args)
+          :stream-remove (command.stream-remove/run client args)
+          :get-object (command.get-object/run client args)
+          :stream-get-object (command.stream-get-object/run client args)
+          (throw (Exception. "unknown subcommand")))))))
 
 (defn -main [& args]
   (try
@@ -62,7 +63,7 @@
                         :in-order true)
         (main))
     (catch Exception e
-      (.println *err* (.getMessage e))
+      (println (.getMessage e))
       (System/exit 1))
     (finally
       (shutdown-agents))))

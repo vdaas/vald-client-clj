@@ -4,6 +4,12 @@ A Clojure client library for [Vald](https://github.com/vdaas/vald).
 
 ## Usage
 
+To use this library, one of the following libraries is required.
+
+- `io.grpc/grpc-okhttp`
+- `io.grpc/grpc-netty`
+- `io.grpc/grpc-netty-shaded`
+
 ```clojure
 (require '[vald-client-clj.core :as vald])
 

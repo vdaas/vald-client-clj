@@ -8,15 +8,19 @@
 (def cli-options
   [["-h" "--help" :id :help?]
    ["-n" "--num"
+    :id :num
     :default 10
     :parse-fn #(Integer/parseInt %)]
    ["-r" "--radius"
+    :id :radius
     :default 0
     :parse-fn #(Float/parseFloat %)]
    ["-e" "--epsilon"
+    :id :epsilon
     :default 0
     :parse-fn #(Float/parseFloat %)]
    ["-t" "--timeout"
+    :id :timeout
     :default 0
     :parse-fn #(Integer/parseInt %)]])
 
@@ -24,13 +28,13 @@
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
         {:keys [help? num radius epsilon timeout]} options
-        vector (-> (or (first arguments)
-                       (util/read-from-stdin))
-                   (edn/read-string))
         config {:num num
                 :radius radius
                 :epsilon epsilon
                 :timeout timeout}]
     (if help?
       (println summary)
-      (vald/search client vector config))))
+      (let [vector (-> (or (first arguments)
+                           (util/read-from-stdin))
+                       (edn/read-string))]
+        (vald/search client vector config)))))

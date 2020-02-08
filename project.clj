@@ -20,7 +20,8 @@
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
                              [metosin/jsonista "0.2.2"]
-                             [camel-snake-kebab "0.4.0"]]
+                             [camel-snake-kebab "0.4.0"]
+                             [com.oracle.substratevm/svm "19.2.1"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :main vald-client-clj.cmd
@@ -46,7 +47,8 @@
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
                              [metosin/jsonista "0.2.2"]
-                             [camel-snake-kebab "0.4.0"]]
+                             [camel-snake-kebab "0.4.0"]
+                             [com.oracle.substratevm/svm "19.2.1"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :main vald-client-clj.cmd

@@ -1,6 +1,7 @@
 (ns vald-client-clj.command.search
   (:require
    [clojure.tools.cli :as cli]
+   [clojure.string :as string]
    [clojure.edn :as edn]
    [vald-client-clj.core :as vald]
    [vald-client-clj.util :as util]))
@@ -26,6 +27,16 @@
     :default 100000
     :parse-fn #(Integer/parseInt %)]])
 
+(defn usage [summary]
+  (->> ["Usage: valdcli [OPTIONS] search [SUBOPTIONS] VECTOR"
+        ""
+        "Search single vector."
+        ""
+        "Sub Options:"
+        summary
+        ""]
+       (string/join "\n")))
+
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
@@ -38,7 +49,9 @@
                 :epsilon epsilon
                 :timeout timeout}]
     (if help?
-      (println summary)
+      (-> summary
+          (usage)
+          (println))
       (let [vector (-> (or (first arguments)
                            (util/read-from-stdin))
                        (read-string))]

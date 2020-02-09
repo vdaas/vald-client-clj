@@ -21,7 +21,13 @@
       (println summary)
       (let [ids (-> (or (first arguments)
                         (util/read-from-stdin))
-                    (read-string))]
-        (-> client
-            (vald/stream-remove ids))
-        (println (str "removed: " (count ids)))))))
+                    (read-string))
+            res (-> client
+                    (vald/stream-remove println ids)
+                    (deref))]
+        (if (:error res)
+          (throw (:error res))
+          (->> res
+               (:count)
+               (str "removed: ")
+               (println)))))))

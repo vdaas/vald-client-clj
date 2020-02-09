@@ -41,7 +41,9 @@
       (println summary)
       (let [ids (-> (or (first arguments)
                         (util/read-from-stdin))
-                    (read-string))]
-        (-> client
-            (vald/stream-search-by-id ids config)
-            (println))))))
+                    (read-string))
+            res (-> client
+                    (vald/stream-search-by-id println ids config)
+                    (deref))]
+        (when (:error res)
+          (throw (:error res)))))))

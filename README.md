@@ -1,6 +1,6 @@
 # vald-client-clj
 
-A Clojure client library for [Vald](https://github.com/vdaas/vald).
+A Clojure gRPC client library for [Vald](https://github.com/vdaas/vald).
 
 ## Usage
 
@@ -26,26 +26,33 @@ To use this library, one of the following libraries is required.
 
 (-> client
     (vald/stream-insert
+      println
       [{:id "meta1"
         :vector [0.1 0.2 0.3 0.4 0.5 0.6]}
        {:id "meta2"
-        :vector [0.2 0.2 0.2 0.2 0.2 0.2]}]))
+        :vector [0.2 0.2 0.2 0.2 0.2 0.2]}])
+    (deref))
 
 (-> client
     (vald/get-object "meta1"))
 
 (-> client
-    (vald/stream-search-by-id ["meta1" "meta2"] {:num 2}))
+    (vald/stream-search-by-id println {:num 2} ["meta1" "meta2"])
+    (deref))
 
 (-> client
-    (vald/search [0.1 0.2 0.3 0.3 0.3 0.4] {:num 2}))
+    (vald/search {:num 2} [0.1 0.2 0.3 0.3 0.3 0.4]))
 
 (-> agent-client
-    (vald/search [0.1 0.2 0.3 0.3 0.3 0.4] {:num 2}))
+    (vald/search {:num 2} [0.1 0.2 0.3 0.3 0.3 0.4]))
 
 (vald/close client)
 (vald/close agent-client)
 ```
+
+## valdcli
+
+`valdcli` is a CLI tool built from vald-client-clj.
 
 ## License
 

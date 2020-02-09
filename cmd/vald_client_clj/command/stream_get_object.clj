@@ -21,7 +21,9 @@
       (println summary)
       (let [ids (-> (or (first arguments)
                         (util/read-from-stdin))
-                    (read-string))]
-        (-> client
-            (vald/stream-get-object ids)
-            (println))))))
+                    (read-string))
+            res (-> client
+                    (vald/stream-get-object println ids)
+                    (deref))]
+        (when (:error res)
+          (throw (:error res)))))))

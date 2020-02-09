@@ -43,5 +43,5 @@
                            (util/read-from-stdin))
                        (read-string))]
         (-> client
-            (vald/search vector config)
+            (vald/search config vector)
             (println))))))

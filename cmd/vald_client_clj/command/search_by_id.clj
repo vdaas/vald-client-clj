@@ -34,5 +34,5 @@
     (if help?
       (println summary)
       (-> client
-          (vald/search-by-id id config)
+          (vald/search-by-id config id)
           (println)))))

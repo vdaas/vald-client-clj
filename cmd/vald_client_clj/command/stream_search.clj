@@ -41,7 +41,9 @@
       (println summary)
       (let [vectors (-> (or (first arguments)
                             (util/read-from-stdin))
-                        (read-string))]
-        (-> client
-            (vald/stream-search vectors config)
-            (println))))))
+                        (read-string))
+            res (-> client
+                    (vald/stream-search println config vectors)
+                    (deref))]
+        (when (:error res)
+          (throw (:error res)))))))

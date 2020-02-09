@@ -21,7 +21,13 @@
       (println summary)
       (let [vectors (-> (or (first arguments)
                             (util/read-from-stdin))
-                        (read-string))]
-        (-> client
-            (vald/stream-insert vectors))
-        (println (str "inserted: " (count vectors)))))))
+                        (read-string))
+            res (-> client
+                    (vald/stream-insert println vectors)
+                    (deref))]
+        (if (:error res)
+          (throw (:error res))
+          (->> res
+               (:count)
+               (str "inserted: ")
+               (println)))))))

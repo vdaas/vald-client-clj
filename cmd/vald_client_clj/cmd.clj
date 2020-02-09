@@ -91,7 +91,8 @@
                         :in-order true)
         (main))
     (catch Exception e
-      (.println System/err (.getMessage e))
-      (System/exit 1))
+      (throw e)
+      #_(.println System/err (.getMessage e))
+      #_(System/exit 1))
     (finally
       (shutdown-agents))))

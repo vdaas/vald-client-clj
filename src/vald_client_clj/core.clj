@@ -114,10 +114,10 @@
                               (deliver pm {:status :done
                                            :count @cnt})))))]
         (->> reqs
-             (map #(-> observer
+             (map #(-> ^StreamObserver observer
                        (.onNext %)))
              (doall))
-        (-> observer
+        (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
   (stream-search-by-id [this f config ids]
@@ -145,10 +145,10 @@
                               (deliver pm {:status :done
                                            :count @cnt})))))]
         (->> reqs
-             (map #(-> observer
+             (map #(-> ^StreamObserver observer
                        (.onNext %)))
              (doall))
-        (-> observer
+        (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
   (insert [this id vector]
@@ -182,10 +182,10 @@
                               (deliver pm {:status :done
                                            :count @cnt})))))]
         (->> reqs
-             (map #(-> observer
+             (map #(-> ^StreamObserver observer
                        (.onNext %)))
              (doall))
-        (-> observer
+        (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
   (multi-insert [this vectors]
@@ -230,10 +230,10 @@
                               (deliver pm {:status :done
                                            :count @cnt})))))]
         (->> reqs
-             (map #(-> observer
+             (map #(-> ^StreamObserver observer
                        (.onNext %)))
              (doall))
-        (-> observer
+        (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
   (multi-update [this vectors]
@@ -276,10 +276,10 @@
                               (deliver pm {:status :done
                                            :count @cnt})))))]
         (->> reqs
-             (map #(-> observer
+             (map #(-> ^StreamObserver observer
                        (.onNext %)))
              (doall))
-        (-> observer
+        (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
   (multi-remove [this ids]
@@ -325,10 +325,10 @@
                               (deliver pm {:status :done
                                            :count @cnt})))))]
         (->> reqs
-             (map #(-> observer
+             (map #(-> ^StreamObserver observer
                        (.onNext %)))
              (doall))
-        (-> observer
+        (-> ^StreamObserver observer
             (.onCompleted))
         pm))))
 

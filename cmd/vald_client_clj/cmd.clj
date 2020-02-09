@@ -23,6 +23,7 @@
 
 (def cli-options
   [[nil "--help" "show usage" :id :help?]
+   ["-d" "--debug" "debug mode" :id :debug?]
    ["-p" "--port PORT" "Port number"
     :id :port
     :default 8080
@@ -56,7 +57,7 @@
         ""]
        (string/join "\n")))
 
-(defn main
+(defn run
   [{:keys [options summary arguments errors] :as parsed-result}]
   (let [{:keys [help? port host agent?]} options
         cmd (first arguments)]
@@ -84,15 +85,20 @@
           :stream-get-object (command.stream-get-object/run client args)
           (throw (Exception. "unknown subcommand")))))))
 
-(defn -main [& args]
+(defn main [{:keys [options] :as parsed-result}]
+  (let [{:keys [debug?]} options]
   (try
-    (-> args
-        (cli/parse-opts cli-options
-                        :in-order true)
-        (main))
+    (run parsed-result)
     (catch Exception e
-      (throw e)
-      #_(.println System/err (.getMessage e))
-      #_(System/exit 1))
+      (when debug?
+        (throw e))
+      (.println System/err (.getMessage e))
+      (System/exit 1))
     (finally
-      (shutdown-agents))))
+      (shutdown-agents)))))
+
+(defn -main [& args]
+  (-> args
+      (cli/parse-opts cli-options
+                      :in-order true)
+      (main)))

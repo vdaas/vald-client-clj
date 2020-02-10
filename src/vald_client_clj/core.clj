@@ -3,6 +3,7 @@
   (:import
    [org.vdaas.vald ValdGrpc]
    [org.vdaas.vald.agent AgentGrpc]
+   [org.vdaas.vald.payload Empty]
    [org.vdaas.vald.payload Object$ID Object$IDs Object$Vector Object$Vectors]
    [org.vdaas.vald.payload Search$Request Search$IDRequest Search$Config]
    [io.grpc ManagedChannelBuilder]
@@ -15,6 +16,10 @@
       (.setEpsilon (or (:epsilon config) 0.01))
       (.setTimeout (or (:timeout config) 3000000000))
       (.build)))
+
+(defn empty->map [e]
+  (when (instance? Empty e)
+    {}))
 
 (defn object-id->map [id]
   {:id (.getId id)})
@@ -158,7 +163,8 @@
                     (.addAllVector (seq (map float vector)))
                     (.build))]
         (-> stub
-            (.insert req)))))
+            (.insert req)
+            (empty->map)))))
   (stream-insert [this f vectors]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
@@ -173,7 +179,9 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
-                              (f res))
+                              (-> res
+                                  (empty->map)
+                                  (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
                                            :error throwable
@@ -198,7 +206,8 @@
             req (-> (Object$Vectors/newBuilder)
                     (.addAllVectors vecs))]
         (-> stub
-            (.multiInsert req)))))
+            (.multiInsert req)
+            (->> (mapv empty->map))))))
   (update [this id vector]
     (when (false? (.isShutdown channel))
       (let [req (-> (Object$Vector/newBuilder)
@@ -206,7 +215,8 @@
                     (.addAllVector (seq (map float vector)))
                     (.build))]
         (-> stub
-            (.update req)))))
+            (.update req)
+            (empty->map)))))
   (stream-update [this f vectors]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
@@ -221,7 +231,9 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
-                              (f res))
+                              (-> res
+                                  (empty->map)
+                                  (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
                                            :error throwable
@@ -246,14 +258,16 @@
             req (-> (Object$Vectors/newBuilder)
                     (.addAllVectors vecs))]
         (-> stub
-            (.multiUpdate req)))))
+            (.multiUpdate req)
+            (->> (mapv empty->map))))))
   (remove-id [this id]
     (when (false? (.isShutdown channel))
       (let [id (-> (Object$ID/newBuilder)
                    (.setId id)
                    (.build))]
         (-> stub
-            (.remove id)))))
+            (.remove id)
+            (empty->map)))))
   (stream-remove [this f ids]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
@@ -267,7 +281,9 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
-                              (f res))
+                              (-> res
+                                  (empty->map)
+                                  (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
                                            :error throwable
@@ -287,7 +303,8 @@
       (let [req (-> (Object$IDs/newBuilder)
                     (.addAllID ids))]
         (-> stub
-            (.multiRemove req)))))
+            (.multiRemove req)
+            (->> (mapv empty->map))))))
   (get-object [this id]
     (when (false? (.isShutdown channel))
       (let [id (-> (Object$ID/newBuilder)

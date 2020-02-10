@@ -54,6 +54,33 @@ To use this library, one of the following libraries is required.
 
 `valdcli` is a CLI tool built from vald-client-clj.
 
+```sh
+$ valdcli --help
+Usage: valdcli [OPTIONS] ACTION
+
+Options:
+      --help                  show usage
+  -d, --debug                 debug mode
+  -p, --port PORT  8080       Port number
+  -h, --host HOST  localhost  Hostname
+  -a, --agent                 connect as an agent client
+
+Actions:
+  exists               Check whether ID exists or not.
+  insert               Insert single vector.
+  search               Search single vector.
+  search-by-id         Search vectors using single ID.
+  update               Update single vector.
+  remove               Remove single ID.
+  get-object           Get object info of single ID.
+  stream-insert        Insert multiple vectors.
+  stream-search        Search multiple vectors.
+  stream-search-by-id  Search vectors using multiple IDs.
+  stream-update        Update multiple vectors.
+  stream-remove        Remove multiple IDs.
+  stream-get-object    Get object info of multiple IDs.
+```
+
 ## License
 
 Copyright © 2020 rinx

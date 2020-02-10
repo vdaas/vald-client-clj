@@ -106,6 +106,10 @@
   "allPublicMethods":true
 },
 {
+  "name":"org.vdaas.vald.payload.Object$Distance",
+  "allPublicMethods":true
+},
+{
   "name":"org.vdaas.vald.payload.Search$IDRequest$Builder",
   "allPublicMethods":true
 },

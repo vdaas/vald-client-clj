@@ -2,10 +2,13 @@
   (:require
    [clojure.tools.cli :as cli]
    [clojure.string :as string]
-   [vald-client-clj.core :as vald]))
+   [vald-client-clj.core :as vald]
+   [vald-client-clj.util :as util]))
 
 (def cli-options
-  [["-h" "--help" :id :help?]])
+  [["-h" "--help" :id :help?]
+   ["-j" "--json" "write as json"
+    :id :json?]])
 
 (defn usage [summary]
   (->> ["Usage: valdcli [OPTIONS] get-object [SUBOPTIONS] ID"
@@ -20,7 +23,10 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help?]} options
+        {:keys [help? json?]} options
+        writer (if json?
+                 (comp println util/->json)
+                 (comp println util/->edn))
         id (first arguments)]
     (if (or help? (nil? id))
       (-> summary
@@ -28,4 +34,4 @@
           (println))
       (-> client
           (vald/get-object id)
-          (println)))))
+          (writer)))))

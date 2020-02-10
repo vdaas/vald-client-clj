@@ -8,7 +8,7 @@
 
 (def cli-options
   [["-h" "--help" :id :help?]
-   ["-j" "--json" "read as json"
+   ["-j" "--json" "read and write as json"
     :id :json?]])
 
 (defn usage [summary]
@@ -27,7 +27,10 @@
         {:keys [help? json?]} options
         read-string (if json?
                       util/read-json
-                      edn/read-string)]
+                      edn/read-string)
+        writer (if json?
+                 (comp println util/->json)
+                 (comp println util/->edn))]
     (if help?
       (-> summary
           (usage)
@@ -36,7 +39,7 @@
                         (util/read-from-stdin))
                     (read-string))
             res (-> client
-                    (vald/stream-get-object println ids)
+                    (vald/stream-get-object writer ids)
                     (deref))]
         (when (:error res)
           (throw (:error res)))))))

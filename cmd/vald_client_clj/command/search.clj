@@ -8,7 +8,7 @@
 
 (def cli-options
   [["-h" "--help" :id :help?]
-   ["-j" "--json" "read as json"
+   ["-j" "--json" "read and write as json"
     :id :json?]
    ["-n" "--num NUM"
     :id :num
@@ -44,6 +44,9 @@
         read-string (if json?
                       util/read-json
                       edn/read-string)
+        writer (if json?
+                 (comp println util/->json)
+                 (comp println util/->edn))
         config {:num num
                 :radius radius
                 :epsilon epsilon
@@ -57,4 +60,4 @@
                        (read-string))]
         (-> client
             (vald/search config vector)
-            (println))))))
+            (writer))))))

@@ -8,7 +8,7 @@
 
 (def cli-options
   [["-h" "--help" :id :help?]
-   ["-j" "--json" "read as json"
+   ["-j" "--json" "read and write as json"
     :id :json?]
    ["-n" "--num NUM"
     :id :num
@@ -44,6 +44,9 @@
         read-string (if json?
                       util/read-json
                       edn/read-string)
+        writer (if json?
+                 (comp println util/->json)
+                 (comp println util/->edn))
         config {:num num
                 :radius radius
                 :epsilon epsilon
@@ -56,7 +59,7 @@
                         (util/read-from-stdin))
                     (read-string))
             res (-> client
-                    (vald/stream-search-by-id println ids config)
+                    (vald/stream-search-by-id writer ids config)
                     (deref))]
         (when (:error res)
           (throw (:error res)))))))

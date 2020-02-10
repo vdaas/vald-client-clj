@@ -44,6 +44,9 @@
         read-string (if json?
                       util/read-json
                       edn/read-string)
+        writer (if json?
+                 (comp println util/->json)
+                 (comp println util/->edn))
         config {:num num
                 :radius radius
                 :epsilon epsilon
@@ -56,7 +59,7 @@
                             (util/read-from-stdin))
                         (read-string))
             res (-> client
-                    (vald/stream-search println config vectors)
+                    (vald/stream-search writer config vectors)
                     (deref))]
         (when (:error res)
           (throw (:error res)))))))

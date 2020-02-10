@@ -2,10 +2,13 @@
   (:require
    [clojure.tools.cli :as cli]
    [clojure.string :as string]
-   [vald-client-clj.core :as vald]))
+   [vald-client-clj.core :as vald]
+   [vald-client-clj.util :as util]))
 
 (def cli-options
   [["-h" "--help" :id :help?]
+   ["-j" "--json" "write as json"
+    :id :json?]
    ["-n" "--num NUMBER"
     :id :num
     :default 10
@@ -36,7 +39,10 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? num radius epsilon timeout]} options
+        {:keys [help? json? num radius epsilon timeout]} options
+        writer (if json?
+                 (comp println util/->json)
+                 (comp println util/->edn))
         config {:num num
                 :radius radius
                 :epsilon epsilon
@@ -48,4 +54,4 @@
           (println))
       (-> client
           (vald/search-by-id config id)
-          (println)))))
+          (writer)))))

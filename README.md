@@ -53,6 +53,7 @@ To use this library, one of the following libraries is required.
 ## valdcli
 
 `valdcli` is a CLI tool built from vald-client-clj.
+Fast startup time powered by GraalVM.
 
 ```sh
 $ valdcli --help
@@ -80,6 +81,11 @@ Actions:
   stream-remove        Remove multiple IDs.
   stream-get-object    Get object info of multiple IDs.
 ```
+
+usages of each commands available by running:
+
+    $ valdcli exists --help
+
 
 ## License
 

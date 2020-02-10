@@ -16,15 +16,15 @@
     :parse-fn #(Integer/parseInt %)]
    ["-r" "--radius RADIUS"
     :id :radius
-    :default 1.0
+    :default -1.0
     :parse-fn #(Float/parseFloat %)]
    ["-e" "--epsilon EPSILON"
     :id :epsilon
-    :default 0.1
+    :default 0.01
     :parse-fn #(Float/parseFloat %)]
    ["-t" "--timeout TIMEOUT"
     :id :timeout
-    :default 100000
+    :default 3000000000
     :parse-fn #(Integer/parseInt %)]])
 
 (defn usage [summary]

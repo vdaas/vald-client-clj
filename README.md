@@ -1,5 +1,9 @@
 # vald-client-clj
 
+[![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/blob/master/LICENSE)
+[![release](https://img.shields.io/github/v/release/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/releases)
+[![GitHub Actions: Build Native image](https://github.com/rinx/vald-client-clj/workflows/Build%20native%20image/badge.svg)](https://github.com/rinx/vald-client-clj/actions)
+
 A Clojure gRPC client library for [Vald](https://github.com/vdaas/vald).
 
 ## Usage
@@ -53,7 +57,14 @@ To use this library, one of the following libraries is required.
 ## valdcli
 
 `valdcli` is a CLI tool built from vald-client-clj.
+
 Fast startup time powered by GraalVM.
+
+### Install
+
+Native binaries are available from the [latest release](https://github.com/rinx/vald-client-clj/releases/latest).
+
+### Usage
 
 ```sh
 $ valdcli --help
@@ -86,6 +97,19 @@ usages of each commands available by running:
 
     $ valdcli exists --help
 
+To use as an agent client, it is recommended to have an alias like:
+
+```sh
+alias agentcli='valdcli --agent'
+```
+
+## TODO
+
+- [ ] `vald-client-clj.core` documentation
+- [ ] publish to Clojars
+- [ ] generete randomized vector
+- [ ] REPL, socket REPL and scripting
+- [ ] e2e testing
 
 ## License
 

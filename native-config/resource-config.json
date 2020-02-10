@@ -1,0 +1,13 @@
+{
+  "resources":[
+    {"pattern":"META-INF/services/io.grpc.LoadBalancerProvider"}, 
+    {"pattern":"META-INF/services/io.grpc.ManagedChannelProvider"}, 
+    {"pattern":"META-INF/services/io.grpc.NameResolverProvider"}, 
+    {"pattern":"clojure/core.clj"}, 
+    {"pattern":"clojure/core/server.clj"}, 
+    {"pattern":"clojure/core/server__init.class"}, 
+    {"pattern":"clojure/core__init.class"}, 
+    {"pattern":"vald_client_clj/cmd.clj"}, 
+    {"pattern":"vald_client_clj/cmd__init.class"}
+  ]
+}

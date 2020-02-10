@@ -1,8 +1,14 @@
 # vald-client-clj
 
-A Clojure client library for [Vald](https://github.com/vdaas/vald).
+A Clojure gRPC client library for [Vald](https://github.com/vdaas/vald).
 
 ## Usage
+
+To use this library, one of the following libraries is required.
+
+- `io.grpc/grpc-okhttp`
+- `io.grpc/grpc-netty`
+- `io.grpc/grpc-netty-shaded`
 
 ```clojure
 (require '[vald-client-clj.core :as vald])
@@ -20,26 +26,66 @@ A Clojure client library for [Vald](https://github.com/vdaas/vald).
 
 (-> client
     (vald/stream-insert
+      println
       [{:id "meta1"
         :vector [0.1 0.2 0.3 0.4 0.5 0.6]}
        {:id "meta2"
-        :vector [0.2 0.2 0.2 0.2 0.2 0.2]}]))
+        :vector [0.2 0.2 0.2 0.2 0.2 0.2]}])
+    (deref))
 
 (-> client
     (vald/get-object "meta1"))
 
 (-> client
-    (vald/stream-search-by-id ["meta1" "meta2"] {:num 2}))
+    (vald/stream-search-by-id println {:num 2} ["meta1" "meta2"])
+    (deref))
 
 (-> client
-    (vald/search [0.1 0.2 0.3 0.3 0.3 0.4] {:num 2}))
+    (vald/search {:num 2} [0.1 0.2 0.3 0.3 0.3 0.4]))
 
 (-> agent-client
-    (vald/search [0.1 0.2 0.3 0.3 0.3 0.4] {:num 2}))
+    (vald/search {:num 2} [0.1 0.2 0.3 0.3 0.3 0.4]))
 
 (vald/close client)
 (vald/close agent-client)
 ```
+
+## valdcli
+
+`valdcli` is a CLI tool built from vald-client-clj.
+Fast startup time powered by GraalVM.
+
+```sh
+$ valdcli --help
+Usage: valdcli [OPTIONS] ACTION
+
+Options:
+      --help                  show usage
+  -d, --debug                 debug mode
+  -p, --port PORT  8080       Port number
+  -h, --host HOST  localhost  Hostname
+  -a, --agent                 connect as an agent client
+
+Actions:
+  exists               Check whether ID exists or not.
+  insert               Insert single vector.
+  search               Search single vector.
+  search-by-id         Search vectors using single ID.
+  update               Update single vector.
+  remove               Remove single ID.
+  get-object           Get object info of single ID.
+  stream-insert        Insert multiple vectors.
+  stream-search        Search multiple vectors.
+  stream-search-by-id  Search vectors using multiple IDs.
+  stream-update        Update multiple vectors.
+  stream-remove        Remove multiple IDs.
+  stream-get-object    Get object info of multiple IDs.
+```
+
+usages of each commands available by running:
+
+    $ valdcli exists --help
+
 
 ## License
 

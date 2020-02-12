@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+data:
+  ddl.sql: |
+    DROP SCHEMA IF EXISTS `vald` ;
+    CREATE SCHEMA IF NOT EXISTS `vald` DEFAULT CHARACTER SET utf8 ;
+
+    USE `vald` ;
+
+    CREATE TABLE IF NOT EXISTS `vald`.`meta_vector` (
+        `uuid` VARCHAR(255) NOT NULL,
+        `vector` BLOB NOT NULL,
+        `meta` VARCHAR(1024) NOT NULL,
+        `id` int NOT NULL AUTO_INCREMENT,
+        PRIMARY KEY (`uuid`),
+        UNIQUE INDEX `id_unique` (`id` ASC),
+        UNIQUE INDEX `meta_unique` (`meta` ASC)
+    )
+    ENGINE = InnoDB;
+
+    CREATE TABLE IF NOT EXISTS `vald`.`pod_ip` (
+        `id` int NOT NULL,
+        `ip` VARCHAR(64) NOT NULL,
+        PRIMARY KEY (`id`, `ip`),
+        INDEX `ip_index` (`ip` ASC)
+    )
+    ENGINE = InnoDB;

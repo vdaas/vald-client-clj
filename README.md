@@ -93,9 +93,50 @@ Actions:
   stream-get-object    Get object info of multiple IDs.
 ```
 
+It supports both EDN and JSON format data.
+
+#### insert
+
+```sh
+## insert EDN formatted vector
+$ valdcli insert '{:id "abc" :vector [0.1 0.2 0.3 0.4 0.5 0.6]}'
+
+## it supports to read stdin
+$ echo '{:id "abc" :vector [0.1 0.2 0.3 0.4 0.5 0.6]}' | valdcli -p 8081 insert
+
+## by adding '--json' flag, it reads JSON formatted vector
+$ valdcli -h vald.vdaas.org -p 8081 insert --json '{"id": "abc", "vector": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]}'
+```
+
+#### search, search-by-id
+
+```sh
+$ valdcli search '[0.1 0.2 0.3 0.4 0.5 0.6]'
+
+## using options
+$ valdcli search --num 100 --epsilon 0.02 '[0.1 0.2 0.3 0.4 0.5 0.6]'
+
+## search id 'xyz'
+$ valdcli search-by-id --num 100 xyz
+```
+
+#### stream-insert, stream-search
+
+```sh
+$ valdcli stream-insert '[{:id "abc" :vector [0.1 0.2 0.3 0.4 0.5 0.6]} {:id "def" :vector [0.1 0.2 0.3 0.4 0.5 0.6]}]'
+
+$ valdcli stream-search -n 5 '[[0.1 0.2 0.3 0.4 0.5 0.6] [0.1 0.2 0.3 0.4 0.5 0.6] [0.1 0.2 0.3 0.4 0.5 0.6]]'
+
+$ valdcli stream-search-by-id -n 5 '["abc" "def" "xyz"]'
+```
+
+#### tips
+
 usages of each commands available by running:
 
-    $ valdcli exists --help
+```sh
+$ valdcli exists --help
+```
 
 To use as an agent client, it is recommended to have an alias like:
 

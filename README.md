@@ -1,4 +1,4 @@
-# vald-client-clj
+# vald-client-clj / valdcli
 
 [![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/blob/master/LICENSE)
 [![release](https://img.shields.io/github/v/release/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/releases)

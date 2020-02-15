@@ -31,3 +31,6 @@
 
 (defn ->edn [obj]
   (with-out-str (pprint/pprint obj)))
+
+(defn ->minified-edn [obj]
+  (with-out-str (pr obj)))

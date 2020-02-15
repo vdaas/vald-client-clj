@@ -16,7 +16,8 @@
    [vald-client-clj.command.remove :as command.remove]
    [vald-client-clj.command.stream-remove :as command.stream-remove]
    [vald-client-clj.command.get-object :as command.get-object]
-   [vald-client-clj.command.stream-get-object :as command.stream-get-object])
+   [vald-client-clj.command.stream-get-object :as command.stream-get-object]
+   [vald-client-clj.command.rand-vec :as command.rand-vec])
   (:gen-class))
 
 (set! *warn-on-reflection* true)
@@ -54,6 +55,8 @@
         "  stream-update        Update multiple vectors."
         "  stream-remove        Remove multiple IDs."
         "  stream-get-object    Get object info of multiple IDs."
+        "  rand-vec             Prints randomized vector."
+        "  rand-vecs            Prints randomized vectors."
         ""]
        (string/join "\n")))
 
@@ -83,6 +86,8 @@
           :stream-remove (command.stream-remove/run client args)
           :get-object (command.get-object/run client args)
           :stream-get-object (command.stream-get-object/run client args)
+          :rand-vec (command.rand-vec/run-vec args)
+          :rand-vecs (command.rand-vec/run-vecs args)
           (throw (Exception. "unknown subcommand")))))))
 
 (defn main [{:keys [options] :as parsed-result}]

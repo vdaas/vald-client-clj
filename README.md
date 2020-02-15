@@ -2,6 +2,8 @@
 
 [![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/blob/master/LICENSE)
 [![release](https://img.shields.io/github/v/release/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/rinx/valdcli.svg?style=flat-square)](https://hub.docker.com/r/rinx/valdcli)
+
 [![GitHub Actions: Build Native image](https://github.com/rinx/vald-client-clj/workflows/Build%20native%20image/badge.svg)](https://github.com/rinx/vald-client-clj/actions)
 
 A Clojure gRPC client library for [Vald](https://github.com/vdaas/vald).
@@ -91,6 +93,8 @@ Actions:
   stream-update        Update multiple vectors.
   stream-remove        Remove multiple IDs.
   stream-get-object    Get object info of multiple IDs.
+  rand-vec             Prints randomized vector.
+  rand-vecs            Prints randomized vectors.
 ```
 
 It supports both EDN and JSON format data.
@@ -99,13 +103,13 @@ It supports both EDN and JSON format data.
 
 ```sh
 ## insert EDN formatted vector
-$ valdcli insert '{:id "abc" :vector [0.1 0.2 0.3 0.4 0.5 0.6]}'
+$ valdcli insert abc "[0.1 0.2 0.3 0.4 0.5 0.6]"
 
 ## it supports to read stdin
-$ echo '{:id "abc" :vector [0.1 0.2 0.3 0.4 0.5 0.6]}' | valdcli -p 8081 insert
+$ echo "[0.1 0.2 0.3 0.4 0.5 0.6]" | valdcli -p 8081 insert abc
 
 ## by adding '--json' flag, it reads JSON formatted vector
-$ valdcli -h vald.vdaas.org -p 8081 insert --json '{"id": "abc", "vector": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]}'
+$ valdcli -h vald.vdaas.org -p 8081 insert --json abc "[0.1, 0.2, 0.3, 0.4, 0.5, 0.6]"
 ```
 
 #### search, search-by-id
@@ -148,7 +152,7 @@ alias agentcli='valdcli --agent'
 
 - [ ] `vald-client-clj.core` documentation
 - [ ] publish to Clojars
-- [ ] generete randomized vector
+- [x] generete randomized vector
 - [ ] REPL, socket REPL and scripting
 - [ ] e2e testing
 

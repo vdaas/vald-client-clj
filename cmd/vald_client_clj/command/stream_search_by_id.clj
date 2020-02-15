@@ -59,7 +59,7 @@
                         (util/read-from-stdin))
                     (read-string))
             res (-> client
-                    (vald/stream-search-by-id writer ids config)
+                    (vald/stream-search-by-id writer config ids)
                     (deref))]
         (when (:error res)
           (throw (:error res)))))))

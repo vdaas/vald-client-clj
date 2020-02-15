@@ -1,7 +1,7 @@
 # vald-client-clj / valdcli
 
-[![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/blob/master/LICENSE)
-[![release](https://img.shields.io/github/v/release/rinx/vald-client-clj)](https://github.com/rinx/vald-client-clj/releases)
+[![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj?style=flat-square)](https://github.com/rinx/vald-client-clj/blob/master/LICENSE)
+[![release](https://img.shields.io/github/v/release/rinx/vald-client-clj?style=flat-square)](https://github.com/rinx/vald-client-clj/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/rinx/valdcli.svg?style=flat-square)](https://hub.docker.com/r/rinx/valdcli)
 
 [![GitHub Actions: Build Native image](https://github.com/rinx/vald-client-clj/workflows/Build%20native%20image/badge.svg)](https://github.com/rinx/vald-client-clj/actions)
@@ -65,6 +65,14 @@ Fast startup time powered by GraalVM.
 ### Install
 
 Native binaries are available from the [latest release](https://github.com/rinx/vald-client-clj/releases/latest).
+
+#### Docker image
+
+[Docker image](https://hub.docker.com/r/rinx/valdcli) is also available.
+
+```sh
+$ docker run -it rinx/valdcli --help
+```
 
 ### Usage
 

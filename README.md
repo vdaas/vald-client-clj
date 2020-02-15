@@ -162,7 +162,7 @@ alias agentcli='valdcli --agent'
 - [ ] publish to Clojars
 - [x] generete randomized vector
 - [ ] REPL, socket REPL and scripting
-- [ ] e2e testing
+- [x] e2e testing
 
 ## License
 

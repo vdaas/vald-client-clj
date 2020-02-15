@@ -9,7 +9,9 @@
 (def cli-options
   [["-h" "--help" :id :help?]
    ["-j" "--json" "read as json"
-    :id :json?]])
+    :id :json?]
+   [nil "--elapsed-time" "show elapsed time the request took"
+    :id :elapsed-time?]])
 
 (defn usage [summary]
   (->> ["Usage: valdcli [OPTIONS] update [SUBOPTIONS] ID VECTOR"
@@ -24,7 +26,7 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? json?]} options
+        {:keys [help? json? elapsed-time?]} options
         read-string (if json?
                       util/read-json
                       edn/read-string)
@@ -35,6 +37,10 @@
           (println))
       (let [vector (-> (or (second arguments)
                            (util/read-from-stdin))
-                       (read-string))]
-        (vald/update client id vector)
+                       (read-string))
+            f (fn []
+                (vald/update client id vector))]
+        (if elapsed-time?
+          (time (f))
+          (f))
         (println "updated.")))))

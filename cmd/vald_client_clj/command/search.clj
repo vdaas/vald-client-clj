@@ -10,6 +10,8 @@
   [["-h" "--help" :id :help?]
    ["-j" "--json" "read and write as json"
     :id :json?]
+   [nil "--elapsed-time" "show elapsed time the request took"
+    :id :elapsed-time?]
    ["-n" "--num NUM"
     :id :num
     :default 10
@@ -40,7 +42,7 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? json? num radius epsilon timeout]} options
+        {:keys [help? json? elapsed-time? num radius epsilon timeout]} options
         read-string (if json?
                       util/read-json
                       edn/read-string)
@@ -57,7 +59,11 @@
           (println))
       (let [vector (-> (or (first arguments)
                            (util/read-from-stdin))
-                       (read-string))]
-        (-> client
-            (vald/search config vector)
-            (writer))))))
+                       (read-string))
+            f (fn []
+                (-> client
+                    (vald/search config vector)
+                    (writer)))]
+        (if elapsed-time?
+          (time (f))
+          (f))))))

@@ -5,7 +5,9 @@
    [vald-client-clj.core :as vald]))
 
 (def cli-options
-  [["-h" "--help" :id :help?]])
+  [["-h" "--help" :id :help?]
+   [nil "--elapsed-time" "show elapsed time the request took"
+    :id :elapsed-time?]])
 
 (defn usage [summary]
   (->> ["Usage: valdcli [OPTIONS] remove [SUBOPTIONS] ID"
@@ -20,12 +22,15 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help?]} options
+        {:keys [help? elapsed-time?]} options
         id (first arguments)]
     (if (or help? (nil? id))
       (-> summary
           (usage)
           (println))
-      (do
-        (vald/remove-id client id)
+      (let [f (fn []
+                (vald/remove-id client id))]
+        (if elapsed-time?
+          (time (f))
+          (f))
         (println "removed.")))))

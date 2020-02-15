@@ -8,7 +8,9 @@
 (def cli-options
   [["-h" "--help" :id :help?]
    ["-j" "--json" "write as json"
-    :id :json?]])
+    :id :json?]
+   [nil "--elapsed-time" "show elapsed time the request took"
+    :id :elapsed-time?]])
 
 (defn usage [summary]
   (->> ["Usage: valdcli [OPTIONS] get-object [SUBOPTIONS] ID"
@@ -23,7 +25,7 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? json?]} options
+        {:keys [help? json? elapsed-time?]} options
         writer (if json?
                  (comp println util/->json)
                  (comp println util/->edn))
@@ -32,6 +34,10 @@
       (-> summary
           (usage)
           (println))
-      (-> client
-          (vald/get-object id)
-          (writer)))))
+      (let [f (fn []
+                (-> client
+                    (vald/get-object id)
+                    (writer)))]
+        (if elapsed-time?
+          (time (f))
+          (f))))))

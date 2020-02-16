@@ -3,7 +3,6 @@
 [![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj?style=flat-square)](https://github.com/rinx/vald-client-clj/blob/master/LICENSE)
 [![release](https://img.shields.io/github/v/release/rinx/vald-client-clj?style=flat-square)](https://github.com/rinx/vald-client-clj/releases)
 [![Clojars Project](https://img.shields.io/clojars/v/vald-client-clj.svg?style=flat-square)](https://clojars.org/vald-client-clj)
-[![cljdoc](https://cljdoc.org/badge/vald-client-clj/vald-client-clj)](https://cljdoc.org/d/vald-client-clj/vald-client-clj/CURRENT)
 [![Docker Pulls](https://img.shields.io/docker/pulls/rinx/valdcli.svg?style=flat-square)](https://hub.docker.com/r/rinx/valdcli)
 
 [![GitHub Actions: Build Native image](https://github.com/rinx/vald-client-clj/workflows/Build%20native%20image/badge.svg)](https://github.com/rinx/vald-client-clj/actions)

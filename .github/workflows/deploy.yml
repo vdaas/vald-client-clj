@@ -1,0 +1,25 @@
+name: Deploy to Clojars
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - VALD_CLIENT_CLJ_VERSION
+
+jobs:
+  deploy:
+    name: Deploy to Clojars
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        run: |
+          curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+          chmod a+x lein
+      - name: Deploy
+        run: |
+          ./lein deploy clojars
+        env:
+          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USER }}
+          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASS }}

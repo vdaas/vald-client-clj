@@ -1,4 +1,4 @@
-(defproject vald-client-clj "0.1.0-SNAPSHOT"
+(defproject vald-client-clj #=(clojure.string/trim #=(slurp "VALD_CLIENT_CLJ_VERSION"))
   :description "A client library for Vald."
   :url "https://github.com/rinx/vald-client-clj"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"

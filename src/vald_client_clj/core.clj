@@ -44,23 +44,64 @@
       (->> (mapv object-distance->map))))
 
 (defprotocol IClient
-  (close [this])
-  (exists [this id])
-  (search [this config vector])
-  (search-by-id [this config id])
-  (stream-search [this f config vectors])
-  (stream-search-by-id [this f config ids])
-  (insert [this id vector])
-  (stream-insert [this f vectors])
-  (multi-insert [this vectors])
-  (update [this id vector])
-  (stream-update [this f vectors])
-  (multi-update [this vectors])
-  (remove-id [this id])
-  (stream-remove [this f ids])
-  (multi-remove [this ids])
-  (get-object [this id])
-  (stream-get-object [this f ids]))
+  "A protocol for Vald (gateway|agent) client."
+  (close
+    [this]
+    "Close channel.")
+  (exists
+    [this id]
+    "Check whether `id` exists or not.")
+  (search
+    [this config vector]
+    "Search with `vector`.")
+  (search-by-id
+    [this config id]
+    "Search with `id`.")
+  (stream-search
+    [this f config vectors]
+    "Stream search with `vectors`.
+    `f` will be applied to each responses.")
+  (stream-search-by-id
+    [this f config ids]
+    "Stream search with `ids`
+    `f` will be applied to each responses.")
+  (insert
+    [this id vector]
+    "Insert `id` and `vector` pair.")
+  (stream-insert
+    [this f vectors]
+    "Stream insert with `vectors`.
+    `f` will be applied to each responses.")
+  (multi-insert
+    [this vectors]
+    "Multi insert with `vectors`.")
+  (update
+    [this id vector]
+    "Update `id` and `vector` pair.")
+  (stream-update
+    [this f vectors]
+    "Stream update with `vectors`.
+    `f` will be applied to each responses.")
+  (multi-update
+    [this vectors]
+    "Multi update with `vectors`.")
+  (remove-id
+    [this id]
+    "Remove `id`.")
+  (stream-remove
+    [this f ids]
+    "Stream remove with `ids`.
+    `f` will be applied to each responses.")
+  (multi-remove
+    [this ids]
+    "Multi remove with `ids`.")
+  (get-object
+    [this id]
+    "Get object with `id`.")
+  (stream-get-object
+    [this f ids]
+    "Stream get object with `ids`.
+    `f` will be applied to each responses."))
 
 (defrecord Client [type channel stub async-stub]
   IClient
@@ -366,13 +407,17 @@
 (defn agent-async-stub [channel]
   (AgentGrpc/newStub channel))
 
-(defn vald-client [host port]
+(defn vald-client
+  "Open channel and returns Vald gateway client instance."
+  [host port]
   (let [channel (grpc-channel host port)
         stub (blocking-stub channel)
         async-stub (async-stub channel)]
     (->Client :vald channel stub async-stub)))
 
-(defn agent-client [host port]
+(defn agent-client
+  "Open channel and returns Vald agent client instance."
+  [host port]
   (let [channel (grpc-channel host port)
         stub (agent-blocking-stub channel)
         async-stub (agent-async-stub channel)]

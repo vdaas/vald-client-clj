@@ -319,8 +319,6 @@ jobs:
           {:vector [0.9659463766247516 0.7129174248792229 0.3345289671984051 0.5325195679844225 0.5589141699199695 0.20497376669300038], :id "75666cc5-c5e8-4ba6-a653-7f4f216e2710"}]
           EOF
           sleep 1
-          ./valdcli rand-vecs -n 3 -d 6 --with-ids | ./valdcli -p 8081 stream-insert --elapsed-time
-          sleep 1
           for i in `seq 1 30`
           do
             ./valdcli rand-vec -d 6 | ./valdcli -p 8081 insert --elapsed-time "v${i}"

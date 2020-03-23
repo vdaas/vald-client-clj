@@ -10,7 +10,7 @@
                   :exlusions [io.grpc/grpc-api]]
                  [io.grpc/grpc-protobuf "1.27.0"]
                  [io.grpc/grpc-stub "1.27.0"]
-                 [org.vdaas.vald/vald-client-java "0.0.2"]]
+                 [org.vdaas.vald/vald-client-java "0.0.25"]]
   :repl-options {:init-ns vald-client-clj.core}
   :profiles {:dev
              {:dependencies [[io.grpc/grpc-okhttp "1.27.0"

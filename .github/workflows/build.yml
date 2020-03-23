@@ -287,14 +287,12 @@ jobs:
             --set agent.ngt.auto_index_length=20 \
             --set agent.ngt.dimension=6 \
             --set discoverer.minReplicas=1 \
-            --set discoverer.hpa.enabled=false \
             --set compressor.minReplicas=1 \
             --set compressor.hpa.enabled=false \
             --set compressor.compress.compress_algorithm=gob \
             --set backupManager.minReplicas=1 \
             --set backupManager.hpa.enabled=false \
-            --set indexManager.minReplicas=1 \
-            --set indexManager.hpa.enabled=false \
+            --set indexManager.replicas=1 \
             --set meta.minReplicas=1 \
             --set meta.hpa.enabled=false \
             --set initializer.mysql.enabled=true \

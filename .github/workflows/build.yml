@@ -33,13 +33,14 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 19.3.1
+          GRAALVM_VERSION: 20.0.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
           gu install native-image
           curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
           chmod a+x lein
+          sudo ./lein version
           sudo apt-get update && sudo apt-get install -y upx
       - name: Build native-image
         run: |
@@ -68,13 +69,14 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 19.3.1
+          GRAALVM_VERSION: 20.0.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
           gu install native-image
           curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
           chmod a+x lein
+          sudo ./lein version
           sudo apt-get update && sudo apt-get install -y upx
       - name: Build static native-image
         run: |
@@ -103,7 +105,7 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 19.3.1
+          GRAALVM_VERSION: 20.0.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |

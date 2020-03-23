@@ -17,6 +17,7 @@ jobs:
         run: |
           curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
           chmod a+x lein
+          sudo ./lein version
       - name: Deploy
         run: |
           ./lein deploy clojars

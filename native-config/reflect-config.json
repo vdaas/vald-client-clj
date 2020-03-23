@@ -74,11 +74,11 @@
   ]
 },
 {
-  "name":"org.vdaas.vald.ValdGrpc$ValdStub",
+  "name":"org.vdaas.vald.gateway.ValdGrpc$ValdStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.ValdGrpc$ValdBlockingStub",
+  "name":"org.vdaas.vald.gateway.ValdGrpc$ValdBlockingStub",
   "allPublicMethods":true
 },
 {

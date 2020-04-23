@@ -1,8 +1,8 @@
 (defproject vald-client-clj #=(clojure.string/trim #=(slurp "VALD_CLIENT_CLJ_VERSION"))
   :description "A client library for Vald."
   :url "https://github.com/vdaas/vald-client-clj"
-  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
-            :url "https://www.eclipse.org/legal/epl-2.0/"}
+  :license {:name "Apache License 2.0"
+            :url "https://www.apache.org/licenses/LICENSE-2.0"}
   :deploy-repositories [["clojars" {:sign-releases false
                                     :username :env/clojars_user
                                     :password :env/clojars_pass

@@ -1,15 +1,11 @@
 name: Deploy to Clojars
 on:
   push:
-    branches:
-      - master
     tags:
       - '*.*.*'
       - 'v*.*.*'
       - '*.*.*-*'
       - 'v*.*.*-*'
-    paths:
-      - VALD_CLIENT_CLJ_VERSION
 
 jobs:
   deploy:

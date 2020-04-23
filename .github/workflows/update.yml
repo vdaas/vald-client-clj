@@ -1,0 +1,34 @@
+name: Update version
+on:
+  repository_dispatch:
+
+jobs:
+  update-version:
+    name: update-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+      - name: Run gitwerk semver-auto
+        run: |
+          curl -s https://raw.githubusercontent.com/vdaas/vald/master/versions/VALD_VERSION > VALD_CLIENT_CLJ_VERSION
+          VERSION=`cat VALD_CLIENT_CLJ_VERSION`
+
+          git checkout master
+
+          git config --global user.name "VDaaS org"
+          git config --global user.email "ci@vdaas.org"
+
+          git add VALD_CLIENT_CLJ_VERSION
+          git commit --signoff -m ":bookmark: Release ${VERSION}"
+
+          git tag ${VERSION}
+          git remote set-url origin "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git push origin master
+          git push origin ${VERSION}
+        env:
+          GITHUB_USER: ${{ secrets.VALDCLI_USER }}
+          GITHUB_TOKEN: ${{ secrets.VALDCLI_TOKEN }}

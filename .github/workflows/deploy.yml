@@ -3,6 +3,11 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '*.*.*'
+      - 'v*.*.*'
+      - '*.*.*-*'
+      - 'v*.*.*-*'
     paths:
       - VALD_CLIENT_CLJ_VERSION
 
@@ -22,5 +27,5 @@ jobs:
         run: |
           ./lein deploy clojars
         env:
-          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USER }}
-          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASS }}
+          CLOJARS_USER: ${{ secrets.CLOJARS_USER }}
+          CLOJARS_PASS: ${{ secrets.CLOJARS_PASS }}

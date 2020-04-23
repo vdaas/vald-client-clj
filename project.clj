@@ -1,16 +1,22 @@
 (defproject vald-client-clj #=(clojure.string/trim #=(slurp "VALD_CLIENT_CLJ_VERSION"))
   :description "A client library for Vald."
-  :url "https://github.com/rinx/vald-client-clj"
+  :url "https://github.com/vdaas/vald-client-clj"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
-  :deploy-repositories [["clojars" {:sign-releases false :url "https://clojars.org/repo"}]]
+  :deploy-repositories [["clojars" {:sign-releases false
+                                    :username :env/clojars_user
+                                    :password :env/clojars_pass
+                                    :url "https://clojars.org/repo"}]]
   :dependencies [[org.clojure/clojure "1.10.2-alpha1"]
                  [io.grpc/grpc-api "1.27.0"]
                  [io.grpc/grpc-core "1.27.0"
                   :exlusions [io.grpc/grpc-api]]
                  [io.grpc/grpc-protobuf "1.27.0"]
                  [io.grpc/grpc-stub "1.27.0"]
-                 [org.vdaas.vald/vald-client-java "0.0.25"]]
+                 [org.vdaas.vald/vald-client-java
+                  #=(subs
+                      #=(clojure.string/trim
+                          #=(slurp "VALD_CLIENT_CLJ_VERSION")) 1)]]
   :repl-options {:init-ns vald-client-clj.core}
   :profiles {:dev
              {:dependencies [[io.grpc/grpc-okhttp "1.27.0"

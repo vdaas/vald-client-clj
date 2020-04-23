@@ -1,11 +1,9 @@
 # vald-client-clj / valdcli
 
-[![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj?style=flat-square)](https://github.com/rinx/vald-client-clj/blob/master/LICENSE)
-[![release](https://img.shields.io/github/v/release/rinx/vald-client-clj?style=flat-square)](https://github.com/rinx/vald-client-clj/releases)
+[![LICENSE](https://img.shields.io/github/license/rinx/vald-client-clj?style=flat-square)](https://github.com/vdaas/vald-client-clj/blob/master/LICENSE)
+[![release](https://img.shields.io/github/v/release/rinx/vald-client-clj?style=flat-square)](https://github.com/vdaas/vald-client-clj/releases)
 [![Clojars Project](https://img.shields.io/clojars/v/vald-client-clj.svg?style=flat-square)](https://clojars.org/vald-client-clj)
 [![Docker Pulls](https://img.shields.io/docker/pulls/rinx/valdcli.svg?style=flat-square)](https://hub.docker.com/r/rinx/valdcli)
-
-[![GitHub Actions: Build Native image](https://github.com/rinx/vald-client-clj/workflows/Build%20native%20image/badge.svg)](https://github.com/rinx/vald-client-clj/actions)
 
 A Clojure gRPC client library for [Vald](https://github.com/vdaas/vald).
 
@@ -65,7 +63,7 @@ Fast startup time powered by GraalVM.
 
 ### Install
 
-Native binaries are available from the [latest release](https://github.com/rinx/vald-client-clj/releases/latest).
+Native binaries are available from the [latest release](https://github.com/vdaas/vald-client-clj/releases/latest).
 
 #### Docker image
 
@@ -157,17 +155,9 @@ To use as an agent client, it is recommended to have an alias like:
 alias agentcli='valdcli --agent'
 ```
 
-## TODO
-
-- [x] `vald-client-clj.core` documentation
-- [x] publish to Clojars
-- [x] generete randomized vector
-- [ ] REPL, socket REPL and scripting
-- [x] e2e testing
-
 ## License
 
-Copyright © 2020 rinx
+Copyright © 2020 Vdaas.org Vald team
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at

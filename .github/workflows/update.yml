@@ -1,6 +1,7 @@
 name: Update version
 on:
-  repository_dispatch:
+  schedule:
+    - cron: 0 * * * *
 
 jobs:
   update-version:
@@ -13,8 +14,16 @@ jobs:
           fetch-depth: 0
       - name: Run gitwerk semver-auto
         run: |
-          curl -s https://raw.githubusercontent.com/vdaas/vald/master/versions/VALD_VERSION > VALD_CLIENT_CLJ_VERSION
-          VERSION=`cat VALD_CLIENT_CLJ_VERSION`
+          CURRENT_VERSION=`cat VALD_CLIENT_CLJ_VERSION`
+          VERSION=`curl -s https://raw.githubusercontent.com/vdaas/vald-client-java/master/VALD_CLIENT_JAVA_VERSION`
+          VERSION="v${VERSION}"
+
+          if [ "$CURRENT_VERSION" = "${VERSION}" ];then
+            echo "not updated"
+            exit 0
+          fi
+
+          echo "${VERSION}" > VALD_CLIENT_CLJ_VERSION
 
           git checkout master
 

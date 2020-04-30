@@ -30,6 +30,7 @@
                              [camel-snake-kebab "0.4.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
+              :global-vars {*assert* false}
               :main vald-client-clj.cmd
               :native-image
               {:name "valdcli"
@@ -45,9 +46,12 @@
                       "--initialize-at-build-time"
                       "--allow-incomplete-classpath"
                       "--verbose"
+                      "-J-Dclojure.compiler.direct-linking=true"
+                      "-J-Dclojure.spec.skip-macros=true"
                       "-J-Xms1g"
                       "-J-Xmx6g"]
-               :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}
+               :jvm-opts ["-Dclojure.compiler.direct-linking=true"
+                          "-Dclojure.spec.skip-macros=true"]}}
              :static
              {:source-paths ["cmd"]
               :dependencies [[org.clojure/tools.cli "0.4.2"]
@@ -57,6 +61,7 @@
                              [camel-snake-kebab "0.4.0"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
+              :global-vars {*assert* false}
               :main vald-client-clj.cmd
               :native-image
               {:name "valdcli"
@@ -73,6 +78,9 @@
                       "--allow-incomplete-classpath"
                       "--verbose"
                       "--static"
+                      "-J-Dclojure.compiler.direct-linking=true"
+                      "-J-Dclojure.spec.skip-macros=true"
                       "-J-Xms1g"
                       "-J-Xmx6g"]
-               :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}})
+               :jvm-opts ["-Dclojure.compiler.direct-linking=true"
+                          "-Dclojure.spec.skip-macros=true"]}}})

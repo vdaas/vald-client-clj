@@ -27,7 +27,8 @@
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
                              [metosin/jsonista "0.2.5"]
-                             [camel-snake-kebab "0.4.0"]]
+                             [camel-snake-kebab "0.4.0"]
+                             [borkdude/clj-reflector-graal-java11-fix "0.0.1-graalvm-20.0.0-alpha.2"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :global-vars {*assert* false}
@@ -58,7 +59,8 @@
                              [io.grpc/grpc-okhttp "1.27.0"
                               :exclusions [io.grpc/grpc-core]]
                              [metosin/jsonista "0.2.5"]
-                             [camel-snake-kebab "0.4.0"]]
+                             [camel-snake-kebab "0.4.0"]
+                             [borkdude/clj-reflector-graal-java11-fix "0.0.1-graalvm-20.0.0-alpha.2"]]
               :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
               :aot :all
               :global-vars {*assert* false}

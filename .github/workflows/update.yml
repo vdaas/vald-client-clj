@@ -23,6 +23,14 @@ jobs:
             exit 0
           fi
 
+          VERSION=`curl -s "http://search.maven.org/solrsearch/select?q=vald-client-java&rows=20&wt=json&start=0" | jq -r '.response.docs[] | select(.a == "vald-client-java") | .latestVersion'`
+          VERSION="v${VERSION}"
+
+          if [ "$CURRENT_VERSION" = "${VERSION}" ];then
+            echo "not uploaded to maven repository"
+            exit 0
+          fi
+
           echo "${VERSION}" > VALD_CLIENT_CLJ_VERSION
 
           git checkout master

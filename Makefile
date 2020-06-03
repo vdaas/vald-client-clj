@@ -1,9 +1,11 @@
 XMS = 2g
 XMX = 6g
 
+VERSION=$(shell cat VALD_CLIENT_CLJ_VERSION)
+
 NATIVE_IMAGE_CONFIG_OUTPUT_DIR=native-config
 
-TARGET_JAR=target/vald-client-clj-0.1.0-SNAPSHOT-standalone.jar
+TARGET_JAR=target/vald-client-clj-$(VERSION)-standalone.jar
 
 .PHONY: all
 all: clean

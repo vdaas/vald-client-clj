@@ -15,9 +15,6 @@ clean:
 .PHONY: uberjar
 uberjar: $(TARGET_JAR)
 
-.PHONY: valdcli
-valdcli: target/valdcli
-
 .PHONY: install/native-image
 install/native-image:
 	gu install native-image
@@ -52,5 +49,45 @@ lein:
 $(TARGET_JAR): src cmd
 	lein with-profile +cmd uberjar
 
-target/valdcli: src cmd
-	lein with-profile +cmd native-image
+valdcli: $(TARGET_JAR)
+	native-image \
+	-jar $(TARGET_JAR) \
+	-H:Name=valdcli \
+	-H:+ReportExceptionStackTraces \
+	-H:Log=registerResource: \
+	-H:ConfigurationFileDirectories=native-config \
+	--enable-url-protocols=http,https \
+	--enable-all-security-services \
+	--no-fallback \
+	--no-server \
+	--report-unsupported-elements-at-runtime \
+	--initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder \
+	--initialize-at-build-time \
+	--allow-incomplete-classpath \
+	--verbose \
+	-J-Dclojure.compiler.direct-linking=true \
+	-J-Dclojure.spec.skip-macros=true \
+	-J-Xms$(XMS) \
+	-J-Xmx$(XMX)
+
+valdcli-static: $(TARGET_JAR)
+	native-image \
+	-jar $(TARGET_JAR) \
+	-H:Name=valdcli-static \
+	-H:+ReportExceptionStackTraces \
+	-H:Log=registerResource: \
+	-H:ConfigurationFileDirectories=native-config \
+	--enable-url-protocols=http,https \
+	--enable-all-security-services \
+	--no-fallback \
+	--no-server \
+	--report-unsupported-elements-at-runtime \
+	--initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder \
+	--initialize-at-build-time \
+	--allow-incomplete-classpath \
+	--verbose \
+	--static \
+	-J-Dclojure.compiler.direct-linking=true \
+	-J-Dclojure.spec.skip-macros=true \
+	-J-Xms$(XMS) \
+	-J-Xmx$(XMX)

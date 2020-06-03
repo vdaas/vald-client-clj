@@ -1,8 +1,8 @@
 (ns vald-client-clj.core
   (:refer-clojure :exclude [update remove])
   (:import
-   [org.vdaas.vald.gateway ValdGrpc]
-   [org.vdaas.vald.agent AgentGrpc]
+   [org.vdaas.vald.gateway.vald ValdGrpc]
+   [org.vdaas.vald.agent.core AgentGrpc]
    [org.vdaas.vald.payload Empty]
    [org.vdaas.vald.payload Object$ID Object$IDs Object$Vector Object$Vectors]
    [org.vdaas.vald.payload Search$Request Search$IDRequest Search$Config]

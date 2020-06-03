@@ -64,6 +64,13 @@ valdcli: $(TARGET_JAR)
 	--no-server \
 	--report-unsupported-elements-at-runtime \
 	--initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder \
+	--initialize-at-run-time=io.grpc.okhttp.internal.Util \
+	--initialize-at-run-time=io.grpc.okhttp.OkHttpWritableBufferAllocator \
+	--initialize-at-run-time=io.grpc.okhttp.OkHttpClientTransport$$ClientFrameHandler \
+	--initialize-at-run-time=io.grpc.okhttp.OutboundFlowController \
+	--initialize-at-run-time=io.grpc.okhttp.OkHttpFrameLogger \
+	--initialize-at-run-time=io.grpc.okhttp.internal.framed.Http2 \
+	--initialize-at-run-time=io.grpc.okhttp.internal.framed.Hpack \
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \
@@ -85,6 +92,13 @@ valdcli-static: $(TARGET_JAR)
 	--no-server \
 	--report-unsupported-elements-at-runtime \
 	--initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder \
+	--initialize-at-run-time=io.grpc.okhttp.internal.Util \
+	--initialize-at-run-time=io.grpc.okhttp.OkHttpWritableBufferAllocator \
+	--initialize-at-run-time=io.grpc.okhttp.OkHttpClientTransport$$ClientFrameHandler \
+	--initialize-at-run-time=io.grpc.okhttp.OutboundFlowController \
+	--initialize-at-run-time=io.grpc.okhttp.OkHttpFrameLogger \
+	--initialize-at-run-time=io.grpc.okhttp.internal.framed.Http2 \
+	--initialize-at-run-time=io.grpc.okhttp.internal.framed.Hpack \
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \

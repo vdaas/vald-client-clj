@@ -2,6 +2,7 @@
   (:require
    [clojure.tools.cli :as cli]
    [clojure.string :as string]
+   [clj-random.core :as rand]
    [vald-client-clj.util :as util])
   (:import
    [java.util UUID]))
@@ -58,7 +59,7 @@
       (-> summary
           (usage-vec)
           (println))
-      (let [vector (vec (take dimension (repeatedly rand)))
+      (let [vector (vec (take dimension (repeatedly rand/lrand)))
             writer (if json?
                      (comp println util/->json)
                      (comp println util/->minified-edn))]
@@ -76,8 +77,8 @@
       (let [generate (if with-ids?
                        (fn [] {:id (-> (UUID/randomUUID)
                                        (.toString))
-                               :vector (vec (take dimension (repeatedly rand)))})
-                       (fn [] (vec (take dimension (repeatedly rand)))))
+                               :vector (vec (take dimension (repeatedly rand/lrand)))})
+                       (fn [] (vec (take dimension (repeatedly rand/lrand)))))
             vectors (vec (take number (repeatedly generate)))
             writer (if json?
                      (comp println util/->json)

@@ -64,6 +64,7 @@ valdcli: $(TARGET_JAR)
 	--no-fallback \
 	--no-server \
 	--report-unsupported-elements-at-runtime \
+	--initialize-at-run-time=org.uncommons.maths.random.DefaultSeedGenerator \
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \
@@ -71,7 +72,6 @@ valdcli: $(TARGET_JAR)
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \
 	-J-Xmx$(XMX)
-	# --initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder
 
 valdcli-static: $(TARGET_JAR)
 	native-image \
@@ -87,6 +87,7 @@ valdcli-static: $(TARGET_JAR)
 	--no-server \
 	--report-unsupported-elements-at-runtime \
 	--initialize-at-build-time \
+	--initialize-at-run-time=org.uncommons.maths.random.DefaultSeedGenerator \
 	--allow-incomplete-classpath \
 	--verbose \
 	--static \
@@ -94,4 +95,3 @@ valdcli-static: $(TARGET_JAR)
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \
 	-J-Xmx$(XMX)
-	# --initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder

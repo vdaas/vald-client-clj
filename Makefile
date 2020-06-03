@@ -58,7 +58,6 @@ valdcli: $(TARGET_JAR)
 	-H:+ReportExceptionStackTraces \
 	-H:Log=registerResource: \
 	-H:ConfigurationFileDirectories=native-config \
-	-H:+TraceClassInitialization \
 	--enable-url-protocols=http,https \
 	--enable-all-security-services \
 	--no-fallback \
@@ -80,7 +79,6 @@ valdcli-static: $(TARGET_JAR)
 	-H:+ReportExceptionStackTraces \
 	-H:Log=registerResource: \
 	-H:ConfigurationFileDirectories=native-config \
-	-H:+TraceClassInitialization \
 	--enable-url-protocols=http,https \
 	--enable-all-security-services \
 	--no-fallback \

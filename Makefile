@@ -58,13 +58,11 @@ valdcli: $(TARGET_JAR)
 	-H:+ReportExceptionStackTraces \
 	-H:Log=registerResource: \
 	-H:ConfigurationFileDirectories=native-config \
-	# -H:+RemoveSaturatedTypeFlows
 	--enable-url-protocols=http,https \
 	--enable-all-security-services \
 	--no-fallback \
 	--no-server \
 	--report-unsupported-elements-at-runtime \
-	# --initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \
@@ -72,6 +70,8 @@ valdcli: $(TARGET_JAR)
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \
 	-J-Xmx$(XMX)
+	# -H:+RemoveSaturatedTypeFlows
+	# --initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder
 
 valdcli-static: $(TARGET_JAR)
 	native-image \
@@ -80,13 +80,11 @@ valdcli-static: $(TARGET_JAR)
 	-H:+ReportExceptionStackTraces \
 	-H:Log=registerResource: \
 	-H:ConfigurationFileDirectories=native-config \
-	# -H:+RemoveSaturatedTypeFlows
 	--enable-url-protocols=http,https \
 	--enable-all-security-services \
 	--no-fallback \
 	--no-server \
 	--report-unsupported-elements-at-runtime \
-	# --initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \
@@ -95,3 +93,5 @@ valdcli-static: $(TARGET_JAR)
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \
 	-J-Xmx$(XMX)
+	# -H:+RemoveSaturatedTypeFlows
+	# --initialize-at-run-time=java.lang.Math$$RandomNumberGeneratorHolder

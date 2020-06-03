@@ -35,7 +35,7 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 20.0.0
+          GRAALVM_VERSION: 20.1.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
@@ -71,7 +71,7 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 20.0.0
+          GRAALVM_VERSION: 20.1.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
@@ -108,7 +108,7 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 20.0.0
+          GRAALVM_VERSION: 20.1.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |

@@ -15,6 +15,7 @@ on:
       - cmd/**
       - project.clj
       - VALD_CLIENT_CLJ_VERSION
+      - Makefile
 
 jobs:
   build-linux:

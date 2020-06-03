@@ -59,6 +59,7 @@ valdcli: $(TARGET_JAR)
 	-H:Log=registerResource: \
 	-H:ConfigurationFileDirectories=native-config \
 	-H:+RemoveSaturatedTypeFlows \
+	-H:+TraceClassInitialization \
 	--enable-url-protocols=http,https \
 	--enable-all-security-services \
 	--no-fallback \

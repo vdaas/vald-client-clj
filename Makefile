@@ -64,6 +64,7 @@ valdcli: $(TARGET_JAR)
 	--no-fallback \
 	--no-server \
 	--report-unsupported-elements-at-runtime \
+	--initialize-at-run-time=org.uncommons.maths.random.SecureRandomSeedGenerator \
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \
@@ -85,6 +86,7 @@ valdcli-static: $(TARGET_JAR)
 	--no-fallback \
 	--no-server \
 	--report-unsupported-elements-at-runtime \
+	--initialize-at-run-time=org.uncommons.maths.random.SecureRandomSeedGenerator \
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \

@@ -94,6 +94,10 @@
   "allPublicMethods":true
 },
 {
+  "name":"org.vdaas.vald.payload.Info$Index$Count",
+  "allPublicMethods":true
+},
+{
   "name":"org.vdaas.vald.payload.Object$ID",
   "allPublicMethods":true
 },

@@ -87,21 +87,25 @@ Options:
   -a, --agent                 connect as an agent client
 
 Actions:
-  exists               Check whether ID exists or not.
-  insert               Insert single vector.
-  search               Search single vector.
-  search-by-id         Search vectors using single ID.
-  update               Update single vector.
-  remove               Remove single ID.
-  get-object           Get object info of single ID.
-  stream-insert        Insert multiple vectors.
-  stream-search        Search multiple vectors.
-  stream-search-by-id  Search vectors using multiple IDs.
-  stream-update        Update multiple vectors.
-  stream-remove        Remove multiple IDs.
-  stream-get-object    Get object info of multiple IDs.
-  rand-vec             Prints randomized vector.
-  rand-vecs            Prints randomized vectors.
+  exists                Check whether ID exists or not.
+  insert                Insert single vector.
+  search                Search single vector.
+  search-by-id          Search vectors using single ID.
+  update                Update single vector.
+  remove                Remove single ID.
+  get-object            Get object info of single ID.
+  stream-insert         Insert multiple vectors.
+  stream-search         Search multiple vectors.
+  stream-search-by-id   Search vectors using multiple IDs.
+  stream-update         Update multiple vectors.
+  stream-remove         Remove multiple IDs.
+  stream-get-object     Get object info of multiple IDs.
+  create-index          Call create-index command. (only for Agent)
+  save-index            Call save-index command. (only for Agent)
+  create-and-save-index Call create-and-save-index command. (only for Agent)
+  index-info            Fetch index info. (only for Agent)
+  rand-vec              Prints randomized vector.
+  rand-vecs             Prints randomized vectors.
 ```
 
 It supports both EDN and JSON format data.

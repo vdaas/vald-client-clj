@@ -3,6 +3,7 @@
   (:import
    [org.vdaas.vald.gateway.vald ValdGrpc]
    [org.vdaas.vald.agent.core AgentGrpc]
+   [org.vdaas.vald.payload Control$CreateIndexRequest]
    [org.vdaas.vald.payload Empty]
    [org.vdaas.vald.payload Object$ID Object$IDs Object$Vector Object$Vectors]
    [org.vdaas.vald.payload Search$Request Search$IDRequest Search$Config]
@@ -42,6 +43,11 @@
   (-> res
       (.getResultsList)
       (->> (mapv object-distance->map))))
+
+(defn index-info-count->map [iic]
+  {:stored (.getStored iic)
+   :uncommitted (.getUncommitted iic)
+   :indexing (.getIndexing iic)})
 
 (defprotocol IClient
   "A protocol for Vald (gateway|agent) client."
@@ -101,7 +107,23 @@
   (stream-get-object
     [this f ids]
     "Stream get object with `ids`.
-    `f` will be applied to each responses."))
+    `f` will be applied to each responses.")
+  (create-index
+    [this pool-size]
+    "Call create-index command.
+    This functionality is only for Agents.")
+  (save-index
+    [this]
+    "Call save-index command.
+    This functionality is only for Agents.")
+  (create-and-save-index
+    [this pool-size]
+    "Call create-and-save-index command.
+    This functionality is only for Agents.")
+  (index-info
+    [this]
+    "Fetch index info.
+    This functionality is only for Agents."))
 
 (defrecord Client [type channel stub async-stub]
   IClient
@@ -342,7 +364,8 @@
   (multi-remove [this ids]
     (when (false? (.isShutdown channel))
       (let [req (-> (Object$IDs/newBuilder)
-                    (.addAllID ids))]
+                    (.addAllID ids)
+                    (.build))]
         (-> stub
             (.multiRemove req)
             (->> (mapv empty->map))))))
@@ -388,7 +411,45 @@
              (doall))
         (-> ^StreamObserver observer
             (.onCompleted))
-        pm))))
+        pm)))
+  (create-index [this pool-size]
+    (when (false? (.isShutdown channel))
+      (if (= type :agent)
+        (let [req (-> (Control$CreateIndexRequest/newBuilder)
+                      (.setPoolSize pool-size)
+                      (.build))]
+          (-> stub
+              (.createIndex req)
+              (empty->map)))
+        (throw (Exception. "create-index is not implemented for gateway")))))
+  (save-index [this]
+    (when (false? (.isShutdown channel))
+      (if (= type :agent)
+        (let [req (-> (Empty/newBuilder)
+                      (.build))]
+          (-> stub
+              (.saveIndex req)
+              (empty->map)))
+        (throw (Exception. "save-index is not implemented for gateway")))))
+  (create-and-save-index [this pool-size]
+    (when (false? (.isShutdown channel))
+      (if (= type :agent)
+        (let [req (-> (Control$CreateIndexRequest/newBuilder)
+                      (.setPoolSize pool-size)
+                      (.build))]
+          (-> stub
+              (.createAndSaveIndex req)
+              (empty->map)))
+        (throw (Exception. "create-and-save-index is not implemented for gateway")))))
+  (index-info [this]
+    (when (false? (.isShutdown channel))
+      (if (= type :agent)
+        (let [req (-> (Empty/newBuilder)
+                      (.build))]
+          (-> stub
+              (.indexInfo req)
+              (index-info-count->map)))
+        (throw (Exception. "index-info is not implemented for gateway"))))))
 
 (defn grpc-channel [host port]
   (-> (ManagedChannelBuilder/forAddress host port)
@@ -462,4 +523,16 @@
     @(stream-insert client println vectors))
 
   (-> client
-      (get-object "zz3")))
+      (get-object "zz3"))
+
+  (-> client
+      (create-index 10000))
+
+  (-> client
+      (save-index))
+
+  (-> client
+      (create-and-save-index 1000))
+
+  (-> client
+      (index-info)))

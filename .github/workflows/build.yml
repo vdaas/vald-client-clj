@@ -47,7 +47,7 @@ jobs:
       - name: Build native-image
         run: |
           make valdcli
-          # upx --lzma --best target/valdcli
+          # upx --lzma --best valdcli
           chmod a+x valdcli
       - name: Upload artifact
         uses: actions/upload-artifact@v1

@@ -68,6 +68,7 @@ valdcli: $(TARGET_JAR)
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \
+	$(OPTS) \
 	-J-Dclojure.compiler.direct-linking=true \
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \
@@ -91,6 +92,7 @@ valdcli-static: $(TARGET_JAR)
 	--allow-incomplete-classpath \
 	--verbose \
 	--static \
+	$(OPTS) \
 	-J-Dclojure.compiler.direct-linking=true \
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \

@@ -28,6 +28,7 @@
 
 (def cli-options
   [[nil "--help" "show usage" :id :help?]
+   [nil "--version" "show version" :id :version?]
    ["-d" "--debug" "debug mode" :id :debug?]
    ["-p" "--port PORT" "Port number"
     :id :port
@@ -38,6 +39,9 @@
     :id :host
     :default "localhost"]
    ["-a" "--agent" "connect as an agent client" :id :agent?]])
+
+(defmacro get-version []
+  (System/getProperty "vald-client-clj.version"))
 
 (defn usage [summary]
   (->> ["Usage: valdcli [OPTIONS] ACTION"
@@ -103,16 +107,18 @@
           (throw (Exception. "unknown subcommand")))))))
 
 (defn main [{:keys [options] :as parsed-result}]
-  (let [{:keys [debug?]} options]
-  (try
-    (run parsed-result)
-    (catch Exception e
-      (when debug?
-        (throw e))
-      (.println System/err (.getMessage e))
-      (System/exit 1))
-    (finally
-      (shutdown-agents)))))
+  (let [{:keys [version? debug?]} options]
+    (if version?
+      (println (get-version))
+      (try
+        (run parsed-result)
+        (catch Exception e
+          (when debug?
+            (throw e))
+          (.println System/err (.getMessage e))
+          (System/exit 1))
+        (finally
+          (shutdown-agents))))))
 
 (defn -main [& args]
   (-> args

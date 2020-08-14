@@ -4,7 +4,7 @@
    [clojure.string :as string]
    [vald-client-clj.util :as util])
   (:import
-   [java.util UUID]))
+   [java.util UUID Random]))
 
 (def cli-options-vec
   [["-h" "--help" :id :help?]
@@ -13,7 +13,19 @@
    ["-d" "--dimension DIMENSION" "dimension"
     :id :dimension
     :default 10
-    :parse-fn #(Integer/parseInt %)]])
+    :parse-fn #(Integer/parseInt %)]
+   [nil "--gaussian" "generate random numbers from a Gaussian distribution"
+    :id :gaussian?]
+   [nil "--gaussian-mean MEAN"
+    "mean value for generated random numbers (enabled only when --gaussian is passed)"
+    :id :gaussian-mean
+    :default 0.0
+    :parse-fn #(Float/parseFloat %)]
+   [nil "--gaussian-stddev STDDEV"
+    "standard deviation for generated random numbers (enabled only when --gaussian is passed)"
+    :id :gaussian-stddev
+    :default 1.0
+    :parse-fn #(Float/parseFloat %)]])
 
 (def cli-options-vecs
   [["-h" "--help" :id :help?]
@@ -28,7 +40,19 @@
    ["-d" "--dimension DIMENSION" "dimension"
     :id :dimension
     :default 10
-    :parse-fn #(Integer/parseInt %)]])
+    :parse-fn #(Integer/parseInt %)]
+   [nil "--gaussian" "generate random numbers from a Gaussian distribution"
+    :id :gaussian?]
+   [nil "--gaussian-mean MEAN"
+    "mean value for generated random numbers (enabled only when --gaussian is passed)"
+    :id :gaussian-mean
+    :default 0.0
+    :parse-fn #(Float/parseFloat %)]
+   [nil "--gaussian-stddev STDDEV"
+    "standard deviation for generated random numbers (enabled only when --gaussian is passed)"
+    :id :gaussian-stddev
+    :default 1.0
+    :parse-fn #(Float/parseFloat %)]])
 
 (defn usage-vec [summary]
   (->> ["Usage: valdcli [OPTIONS] rand-vec [SUBOPTIONS]"
@@ -53,12 +77,21 @@
 (defn run-vec [args]
   (let [parsed-result (cli/parse-opts args cli-options-vec)
         {:keys [options summary]} parsed-result
-        {:keys [help? json? number dimension]} options]
+        {:keys [help? json? dimension
+                gaussian? gaussian-mean gaussian-stddev]} options]
     (if help?
       (-> summary
           (usage-vec)
           (println))
-      (let [vector (vec (take dimension (repeatedly rand)))
+      (let [generator (Random.)
+            rand (if gaussian?
+                   (fn []
+                     (-> generator
+                         (.nextGaussian)
+                         (* gaussian-stddev)
+                         (+ gaussian-mean)))
+                   rand)
+            vector (vec (take dimension (repeatedly rand)))
             writer (if json?
                      (comp println util/->json)
                      (comp println util/->minified-edn))]
@@ -68,12 +101,21 @@
 (defn run-vecs [args]
   (let [parsed-result (cli/parse-opts args cli-options-vecs)
         {:keys [options summary]} parsed-result
-        {:keys [help? with-ids? json? number dimension]} options]
+        {:keys [help? with-ids? json? number dimension
+                gaussian? gaussian-mean gaussian-stddev]} options]
     (if help?
       (-> summary
           (usage-vecs)
           (println))
-      (let [generate (if with-ids?
+      (let [generator (Random.)
+            rand (if gaussian?
+                   (fn []
+                     (-> generator
+                         (.nextGaussian)
+                         (* gaussian-stddev)
+                         (+ gaussian-mean)))
+                   rand)
+            generate (if with-ids?
                        (fn [] {:id (-> (UUID/randomUUID)
                                        (.toString))
                                :vector (vec (take dimension (repeatedly rand)))})

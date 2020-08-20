@@ -35,7 +35,7 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 20.1.0
+          GRAALVM_VERSION: 20.2.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
@@ -71,7 +71,7 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 20.1.0
+          GRAALVM_VERSION: 20.2.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
@@ -80,12 +80,27 @@ jobs:
           chmod a+x lein
           sudo ./lein version
           sudo apt-get update && sudo apt-get install -y upx
+      - name: Fetch bundle
+        run: |
+          curl -L -o musl.tar.gz https://github.com/gradinac/musl-bundle-example/releases/download/v1.0/musl.tar.gz
+          tar xvzf musl.tar.gz
+          mv bundle /tmp/musl
+      - name: Build musl-gcc
+        run: |
+          curl -o musl-${MUSL_VERSION}.tar.gz https://musl.libc.org/releases/musl-${MUSL_VERSION}.tar.gz
+          tar xzvf musl-${MUSL_VERSION}.tar.gz
+          cd musl-${MUSL_VERSION}
+          ./configure --disable-shared --prefix=/tmp/musl
+          make
+          make install
+          export PATH=$PATH:/tmp/musl/bin
+          echo "::set-env name=PATH::/tmp/musl/bin:$PATH"
+        env:
+          MUSL_VERSION: 1.2.1
       - name: Build static native-image
         run: |
-          curl -L -o musl.tar.gz https://github.com/gradinac/musl-bundle-example/releases/download/v1.0/musl.tar.gz && tar xvzf musl.tar.gz
-          make OPTS="-H:UseMuslC=\"bundle/\"" valdcli-static
-          mv valdcli-static valdcli
-          upx --lzma --best valdcli
+          make OPTS="--static --libc=musl" valdcli
+          # upx --lzma --best valdcli
           chmod a+x valdcli
       - name: Upload artifact
         uses: actions/upload-artifact@v1
@@ -109,7 +124,7 @@ jobs:
           echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
           echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
         env:
-          GRAALVM_VERSION: 20.1.0
+          GRAALVM_VERSION: 20.2.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
@@ -119,7 +134,7 @@ jobs:
       - name: Build native-image
         run: |
           make valdcli
-          upx --lzma --best valdcli
+          # upx --lzma --best valdcli
           chmod a+x valdcli
       - name: Upload artifact
         uses: actions/upload-artifact@v1

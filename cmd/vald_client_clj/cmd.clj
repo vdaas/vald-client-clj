@@ -4,7 +4,8 @@
    [clojure.string :as string]
    [camel-snake-kebab.core :as csk]
    [vald-client-clj.core :as vald]
-   [vald-client-clj.client :as client])
+   [vald-client-clj.client :as client]
+   [vald-client-clj.repl :as repl])
   (:gen-class))
 
 (set! *warn-on-reflection* true)
@@ -50,7 +51,9 @@
                          :agent? agent?}
             cmd (csk/->kebab-case-keyword cmd)
             args (rest arguments)]
-        (client/exec client-opts cmd args)))))
+        (if (= cmd :repl)
+          (repl/run client-opts args)
+          (client/exec client-opts cmd args))))))
 
 (defn main [{:keys [options] :as parsed-result}]
   (let [{:keys [version? debug?]} options]

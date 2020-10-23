@@ -1,14 +1,32 @@
 (ns vald-client-clj.core
   (:refer-clojure :exclude [update remove])
   (:import
-   [org.vdaas.vald.gateway.vald ValdGrpc]
-   [org.vdaas.vald.agent.core AgentGrpc]
-   [org.vdaas.vald.payload Control$CreateIndexRequest]
-   [org.vdaas.vald.payload Empty]
-   [org.vdaas.vald.payload Object$ID Object$IDs Object$Vector Object$Vectors]
-   [org.vdaas.vald.payload Search$Request Search$IDRequest Search$Config]
+   [org.vdaas.vald.api.v1.vald
+    InsertGrpc SearchGrpc UpdateGrpc RemoveGrpc UpsertGrpc ObjectGrpc]
+   [org.vdaas.vald.api.v1.agent.core AgentGrpc]
+   [org.vdaas.vald.api.v1.payload
+    Insert$Request Insert$MultiRequest Insert$Config
+    Search$Request Search$IDRequest Search$Config
+    Search$MultiRequest Search$MultiIDRequest
+    Search$Response Search$Responses
+    Update$Request Update$MultiRequest Update$Config
+    Remove$Request Remove$MultiRequest Remove$Config
+    Upsert$Request Upsert$MultiRequest Upsert$Config
+    Object$ID Object$IDs
+    Object$Vector Object$Vectors
+    Object$Location Object$Locations
+    Object$Distance
+    Filter$Config
+    Control$CreateIndexRequest
+    Info$Index$Count
+    Empty]
    [io.grpc ManagedChannelBuilder]
    [io.grpc.stub StreamObserver]))
+
+(defn ->filter-config [config]
+  (-> (Filter$Config/newBuilder)
+      (.setAllTargets (:targets config))
+      (.build)))
 
 (defn ->search-config [config]
   (-> (Search$Config/newBuilder)
@@ -16,6 +34,30 @@
       (.setRadius (or (:radius config) -1.0))
       (.setEpsilon (or (:epsilon config) 0.01))
       (.setTimeout (or (:timeout config) 3000000000))
+      (cond->
+        (:filters config) (.setFilters
+                            (->filter-config (:filters config))))
+      (.build)))
+
+(defn ->insert-config [config]
+  (-> (Insert$Config/newBuilder)
+      (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
+      (cond->
+        (:filters config) (.setFilters
+                            (->filter-config (:filters config))))
+      (.build)))
+
+(defn ->update-config [config]
+  (-> (Update$Config/newBuilder)
+      (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
+      (cond->
+        (:filters config) (.setFilters
+                            (->filter-config (:filters config))))
+      (.build)))
+
+(defn ->remove-config [config]
+  (-> (Remove$Config/newBuilder)
+      (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
       (.build)))
 
 (defn empty->map [e]
@@ -29,15 +71,18 @@
   {:id (.getId dist)
    :distance (.getDistance dist)})
 
-(defn meta-vector->map [meta-vec]
-  {:uuid (.getUuid meta-vec)
-   :meta (.getMeta meta-vec)
-   :vector (seq (.getVectorList meta-vec))
-   :ips (seq (.getIpsList meta-vec))})
-
 (defn object-vector->map [obj-vec]
   {:id (.getId obj-vec)
    :vector (seq (.getVectorList obj-vec))})
+
+(defn object-location->map [obj-loc]
+  {:name (.getName obj-loc)
+   :uuid (.getUuid obj-loc)
+   :ips (seq (.getIpsList obj-loc))})
+
+(defn object-locations->map [obj-locs]
+  (->> (.getLocationsList obj-locs)
+       (mapv object-location->map)))
 
 (defn parse-search-response [res]
   (-> res
@@ -50,7 +95,7 @@
    :indexing (.getIndexing iic)})
 
 (defprotocol IClient
-  "A protocol for Vald (gateway|agent) client."
+  "A protocol for Vald client."
   (close
     [this]
     "Close channel.")
@@ -72,34 +117,34 @@
     "Stream search with `ids`
     `f` will be applied to each responses.")
   (insert
-    [this id vector]
+    [this config id vector]
     "Insert `id` and `vector` pair.")
   (stream-insert
-    [this f vectors]
+    [this f config vectors]
     "Stream insert with `vectors`.
     `f` will be applied to each responses.")
   (multi-insert
-    [this vectors]
+    [this config vectors]
     "Multi insert with `vectors`.")
   (update
-    [this id vector]
+    [this config id vector]
     "Update `id` and `vector` pair.")
   (stream-update
-    [this f vectors]
+    [this f config vectors]
     "Stream update with `vectors`.
     `f` will be applied to each responses.")
   (multi-update
-    [this vectors]
+    [this config vectors]
     "Multi update with `vectors`.")
   (remove-id
-    [this id]
+    [this config id]
     "Remove `id`.")
   (stream-remove
-    [this f ids]
+    [this f config ids]
     "Stream remove with `ids`.
     `f` will be applied to each responses.")
   (multi-remove
-    [this ids]
+    [this config ids]
     "Multi remove with `ids`.")
   (get-object
     [this id]
@@ -125,7 +170,7 @@
     "Fetch index info.
     This functionality is only for Agents."))
 
-(defrecord Client [type channel stub async-stub]
+(defrecord Client [channel]
   IClient
   (close [this]
     (when (false? (.isShutdown channel))
@@ -136,7 +181,7 @@
       (let [id (-> (Object$ID/newBuilder)
                    (.setId id)
                    (.build))]
-        (-> stub
+        (-> (ObjectGrpc/newBlockingStub channel)
             (.exists id)
             (object-id->map)))))
   (search [this config vector]
@@ -145,7 +190,7 @@
                     (.addAllVector (seq (map float vector)))
                     (.setConfig (->search-config config))
                     (.build))]
-        (-> stub
+        (-> (SearchGrpc/newBlockingStub channel)
             (.search req)
             (parse-search-response)))))
   (search-by-id [this config id]
@@ -154,7 +199,7 @@
                     (.setId id)
                     (.setConfig (->search-config config))
                     (.build))]
-        (-> stub
+        (-> (SearchGrpc/newBlockingStub channel)
             (.searchByID req)
             (parse-search-response)))))
   (stream-search [this f config vectors]
@@ -167,7 +212,7 @@
                                  (.addAllVector (seq (map float %)))
                                  (.setConfig config)
                                  (.build))))
-            observer (-> async-stub
+            observer (-> (SearchGrpc/newStub channel)
                          (.streamSearch
                           (reify StreamObserver
                             (onNext [this res]
@@ -198,7 +243,7 @@
                                  (.setId %)
                                  (.setConfig config)
                                  (.build))))
-            observer (-> async-stub
+            observer (-> (SearchGrpc/newStub channel)
                          (.streamSearchByID
                           (reify StreamObserver
                             (onNext [this res]
@@ -219,31 +264,41 @@
         (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
-  (insert [this id vector]
+  (insert [this config id vector]
     (when (false? (.isShutdown channel))
-      (let [req (-> (Object$Vector/newBuilder)
+      (let [v (-> (Object$Vector/newBuilder)
                     (.setId id)
                     (.addAllVector (seq (map float vector)))
+                    (.build))
+            config (->insert-config config)
+            req (-> (Insert$Request/newBuilder)
+                    (.setVector v)
+                    (.setConfig config)
                     (.build))]
-        (-> stub
+        (-> (InsertGrpc/newBlockingStub channel)
             (.insert req)
-            (empty->map)))))
-  (stream-insert [this f vectors]
+            (object-location->map)))))
+  (stream-insert [this f config vectors]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
             cnt (atom 0)
+            config (->insert-config config)
             reqs (->> vectors
-                      (mapv #(-> (Object$Vector/newBuilder)
-                                 (.setId (:id %))
-                                 (.addAllVector (seq (map float (:vector %))))
+                      (map #(-> (Object$Vector/newBuilder)
+                                (.setId (:id %))
+                                (.addAllVector (seq (map float (:vector %))))
+                                (.build)))
+                      (mapv #(-> (Insert$Request/newBuilder)
+                                 (.setVector %)
+                                 (.setConfig config)
                                  (.build))))
-            observer (-> async-stub
+            observer (-> (InsertGrpc/newStub channel)
                          (.streamInsert
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
                               (-> res
-                                  (empty->map)
+                                  (object-location->map)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -259,43 +314,58 @@
         (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
-  (multi-insert [this vectors]
+  (multi-insert [this config vectors]
     (when (false? (.isShutdown channel))
-      (let [vecs (->> vectors
+      (let [config (->insert-config config)
+            reqs (->> vectors
                       (map #(-> (Object$Vector/newBuilder)
                                 (.setId (:id %))
                                 (.addAllVector (seq (map float (:vector %))))
-                                (.build))))
-            req (-> (Object$Vectors/newBuilder)
-                    (.addAllVectors vecs))]
-        (-> stub
+                                (.build)))
+                      (mapv #(-> (Insert$Request/newBuilder)
+                                 (.setVector %)
+                                 (.setConfig config)
+                                 (.build))))
+            req (-> (Insert$MultiRequest/newBuilder)
+                    (.addAllRequests reqs))]
+        (-> (InsertGrpc/newBlockingStub channel)
             (.multiInsert req)
-            (->> (mapv empty->map))))))
-  (update [this id vector]
+            (object-locations->map)))))
+  (update [this config id vector]
     (when (false? (.isShutdown channel))
-      (let [req (-> (Object$Vector/newBuilder)
+      (let [config (->update-config config)
+            v (-> (Object$Vector/newBuilder)
                     (.setId id)
                     (.addAllVector (seq (map float vector)))
+                    (.build))
+            req (-> (Update$Request/newBuilder)
+                    (.setVector v)
+                    (.setConfig config)
                     (.build))]
-        (-> stub
+        (-> (UpdateGrpc/newBlockingStub channel)
             (.update req)
-            (empty->map)))))
-  (stream-update [this f vectors]
+            (object-location->map)))))
+  (stream-update [this f config vectors]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
             cnt (atom 0)
+            config (->update-config config)
             reqs (->> vectors
-                      (mapv #(-> (Object$Vector/newBuilder)
-                                 (.setId (:id %))
-                                 (.addAllVector (seq (map float (:vector %))))
+                      (map #(-> (Object$Vector/newBuilder)
+                                (.setId (:id %))
+                                (.addAllVector (seq (map float (:vector %))))
+                                (.build)))
+                      (mapv #(-> (Update$Request/newBuilder)
+                                 (.setVector %)
+                                 (.setConfig config)
                                  (.build))))
-            observer (-> async-stub
+            observer (-> (UpdateGrpc/newStub channel)
                          (.streamUpdate
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
                               (-> res
-                                  (empty->map)
+                                  (object-location->map)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -311,41 +381,56 @@
         (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
-  (multi-update [this vectors]
+  (multi-update [this config vectors]
     (when (false? (.isShutdown channel))
-      (let [vecs (->> vectors
+      (let [config (->update-config config)
+            reqs (->> vectors
                       (map #(-> (Object$Vector/newBuilder)
                                 (.setId (:id %))
                                 (.addAllVector (seq (map float (:vector %))))
-                                (.build))))
-            req (-> (Object$Vectors/newBuilder)
-                    (.addAllVectors vecs))]
-        (-> stub
+                                (.build)))
+                      (mapv #(-> (Update$Request/newBuilder)
+                                 (.setVector %)
+                                 (.setConfig config)
+                                 (.build))))
+            req (-> (Update$MultiRequest/newBuilder)
+                    (.addAllRequests reqs))]
+        (-> (UpdateGrpc/newBlockingStub channel)
             (.multiUpdate req)
-            (->> (mapv empty->map))))))
-  (remove-id [this id]
+            (object-locations->map)))))
+  (remove-id [this config id]
     (when (false? (.isShutdown channel))
-      (let [id (-> (Object$ID/newBuilder)
+      (let [config (->remove-config config)
+            id (-> (Object$ID/newBuilder)
                    (.setId id)
-                   (.build))]
-        (-> stub
-            (.remove id)
-            (empty->map)))))
-  (stream-remove [this f ids]
+                   (.build))
+            req (-> (Remove$Request/newBuilder)
+                    (.setId id)
+                    (.setConfig config)
+                    (.build))]
+        (-> (RemoveGrpc/newBlockingStub channel)
+            (.remove req)
+            (object-location->map)))))
+  (stream-remove [this f config ids]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
             cnt (atom 0)
+            config (->remove-config config)
             reqs (->> ids
-                      (mapv #(-> (Object$ID/newBuilder)
+                      (map #(-> (Object$ID/newBuilder)
                                  (.setId %)
+                                 (.build)))
+                      (mapv #(-> (Remove$Request/newBuilder)
+                                 (.setId %)
+                                 (.setConfig config)
                                  (.build))))
-            observer (-> async-stub
+            observer (-> (RemoveGrpc/newStub channel)
                          (.streamRemove
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
                               (-> res
-                                  (empty->map)
+                                  (object-location->map)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -361,42 +446,42 @@
         (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
-  (multi-remove [this ids]
+  (multi-remove [this config ids]
     (when (false? (.isShutdown channel))
-      (let [req (-> (Object$IDs/newBuilder)
-                    (.addAllID ids)
+      (let [config (->remove-config config)
+            reqs (->> ids
+                      (mapv #(-> (Remove$Request/newBuilder)
+                                 (.setId %)
+                                 (.setConfig config)
+                                 (.build))))
+            req (-> (Remove$MultiRequest/newBuilder)
+                    (.addAllRequests reqs)
                     (.build))]
-        (-> stub
+        (-> (RemoveGrpc/newBlockingStub channel)
             (.multiRemove req)
-            (->> (mapv empty->map))))))
+            (object-locations->map)))))
   (get-object [this id]
     (when (false? (.isShutdown channel))
       (let [id (-> (Object$ID/newBuilder)
                    (.setId id)
-                   (.build))
-            mapper (case type
-                     :vald meta-vector->map
-                     :agent object-vector->map)]
-        (-> stub
+                   (.build))]
+        (-> (ObjectGrpc/newBlockingStub channel)
             (.getObject id)
-            (mapper)))))
+            (object-vector->map)))))
   (stream-get-object [this f ids]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
             cnt (atom 0)
-            mapper (case type
-                     :vald meta-vector->map
-                     :agent object-vector->map)
             reqs (->> ids
                       (mapv #(-> (Object$ID/newBuilder)
                                  (.setId %)
                                  (.build))))
-            observer (-> async-stub
+            observer (-> (ObjectGrpc/newStub channel)
                          (.streamGetObject
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
-                              (-> (mapper res)
+                              (-> (object-vector->map res)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -414,75 +499,51 @@
         pm)))
   (create-index [this pool-size]
     (when (false? (.isShutdown channel))
-      (if (= type :agent)
-        (let [req (-> (Control$CreateIndexRequest/newBuilder)
-                      (.setPoolSize pool-size)
-                      (.build))]
-          (-> stub
-              (.createIndex req)
-              (empty->map)))
-        (throw (Exception. "create-index is not implemented for gateway")))))
+      (let [req (-> (Control$CreateIndexRequest/newBuilder)
+                    (.setPoolSize pool-size)
+                    (.build))]
+        (-> (AgentGrpc/newBlockingStub channel)
+            (.createIndex req)
+            (empty->map)))))
   (save-index [this]
     (when (false? (.isShutdown channel))
-      (if (= type :agent)
-        (let [req (-> (Empty/newBuilder)
-                      (.build))]
-          (-> stub
-              (.saveIndex req)
-              (empty->map)))
-        (throw (Exception. "save-index is not implemented for gateway")))))
+      (let [req (-> (Empty/newBuilder)
+                    (.build))]
+        (-> (AgentGrpc/newBlockingStub channel)
+            (.saveIndex req)
+            (empty->map)))))
   (create-and-save-index [this pool-size]
     (when (false? (.isShutdown channel))
-      (if (= type :agent)
-        (let [req (-> (Control$CreateIndexRequest/newBuilder)
-                      (.setPoolSize pool-size)
-                      (.build))]
-          (-> stub
-              (.createAndSaveIndex req)
-              (empty->map)))
-        (throw (Exception. "create-and-save-index is not implemented for gateway")))))
+      (let [req (-> (Control$CreateIndexRequest/newBuilder)
+                    (.setPoolSize pool-size)
+                    (.build))]
+        (-> (AgentGrpc/newBlockingStub channel)
+            (.createAndSaveIndex req)
+            (empty->map)))))
   (index-info [this]
     (when (false? (.isShutdown channel))
-      (if (= type :agent)
-        (let [req (-> (Empty/newBuilder)
-                      (.build))]
-          (-> stub
-              (.indexInfo req)
-              (index-info-count->map)))
-        (throw (Exception. "index-info is not implemented for gateway"))))))
+      (let [req (-> (Empty/newBuilder)
+                    (.build))]
+        (-> (AgentGrpc/newBlockingStub channel)
+            (.indexInfo req)
+            (index-info-count->map))))))
 
 (defn grpc-channel [host port]
   (-> (ManagedChannelBuilder/forAddress host port)
       (.usePlaintext)
       (.build)))
 
-(defn blocking-stub [channel]
-  (ValdGrpc/newBlockingStub channel))
-
-(defn async-stub [channel]
-  (ValdGrpc/newStub channel))
-
-(defn agent-blocking-stub [channel]
-  (AgentGrpc/newBlockingStub channel))
-
-(defn agent-async-stub [channel]
-  (AgentGrpc/newStub channel))
-
 (defn vald-client
   "Open channel and returns Vald gateway client instance."
   [host port]
-  (let [channel (grpc-channel host port)
-        stub (blocking-stub channel)
-        async-stub (async-stub channel)]
-    (->Client :vald channel stub async-stub)))
+  (let [channel (grpc-channel host port)]
+    (->Client channel)))
 
 (defn agent-client
   "Open channel and returns Vald agent client instance."
+  {:deprecated "v0.1.0"}
   [host port]
-  (let [channel (grpc-channel host port)
-        stub (agent-blocking-stub channel)
-        async-stub (agent-async-stub channel)]
-    (->Client :agent channel stub async-stub)))
+  (vald-client host port))
 
 (comment
   (def client (vald-client "localhost" 8081))
@@ -507,20 +568,20 @@
    (stream-get-object client println ["zz1" "zz3"]))
 
   (-> client
-      (insert "test" (rand-vec)))
+      (insert {} "test" (rand-vec)))
 
   (->> (take 300 (range))
        (map
         (fn [i]
           (-> client
-              (insert (str "zz" i) (rand-vec))))))
+              (insert {} (str "zz" i) (rand-vec))))))
 
   (let [vectors (->> (take 10 (range))
                      (map
                       (fn [i]
                         {:id (str "a" i)
                          :vector (rand-vec)})))]
-    @(stream-insert client println vectors))
+    @(stream-insert client println {} vectors))
 
   (-> client
       (get-object "zz3"))

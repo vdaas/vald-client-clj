@@ -10,6 +10,8 @@
   [["-h" "--help" :id :help?]
    ["-j" "--json" "read as json"
     :id :json?]
+   [nil "--skip-strict-exist-check" "skip strict exist check"
+    :id :skip-strict-exist-check?]
    [nil "--elapsed-time" "show elapsed time the request took"
     :id :elapsed-time?]])
 
@@ -27,10 +29,14 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? json? elapsed-time?]} options
+        {:keys [help? json? skip-strict-exist-check? elapsed-time?]} options
         read-string (if json?
                       util/read-json
-                      edn/read-string)]
+                      edn/read-string)
+        writer (if json?
+                 (comp println util/->json)
+                 (comp println util/->edn))
+        config {:skip-strict-exist-check skip-strict-exist-check?}]
     (if help?
       (-> summary
           (usage)
@@ -40,7 +46,7 @@
                         (read-string))
             f (fn []
                 (-> client
-                    (vald/stream-insert println vectors)
+                    (vald/stream-insert writer config vectors)
                     (deref)))
             res (if elapsed-time?
                   (time (f))

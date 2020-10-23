@@ -21,8 +21,7 @@
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]
    ["-h" "--host HOST" "Hostname"
     :id :host
-    :default "localhost"]
-   ["-a" "--agent" "connect as an agent client" :id :agent?]])
+    :default "localhost"]])
 
 (defmacro get-version []
   (System/getProperty "vald-client-clj.version"))
@@ -40,15 +39,14 @@
 
 (defn run
   [{:keys [options summary arguments errors] :as parsed-result}]
-  (let [{:keys [help? port host agent?]} options
+  (let [{:keys [help? port host]} options
         cmd (first arguments)]
     (if (or help? (nil? cmd))
       (-> summary
           (usage)
           (println))
       (let [client-opts {:host host
-                         :port port
-                         :agent? agent?}
+                         :port port}
             cmd (csk/->kebab-case-keyword cmd)
             args (rest arguments)]
         (if (= cmd :repl)

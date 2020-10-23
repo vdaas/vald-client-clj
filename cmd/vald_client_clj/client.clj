@@ -123,14 +123,12 @@
          (sort)
          (string/join "\n"))))
 
-(defn client-fn [host port agent?]
+(defn client-fn [host port]
   (fn []
-    (if agent?
-      (vald/agent-client host port)
-      (vald/vald-client host port))))
+    (vald/vald-client host port)))
 
-(defn exec [{:keys [host port agent?]} cmd args]
-  (let [client-fn (client-fn host port agent?)
+(defn exec [{:keys [host port]} cmd args]
+  (let [client-fn (client-fn host port)
         client? (get-in cmds [cmd :client?])
         cli-fn (get-in cmds [cmd :cli-fn])]
     (if cli-fn

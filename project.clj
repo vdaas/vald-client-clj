@@ -13,6 +13,7 @@
                   :exlusions [io.grpc/grpc-api]]
                  [io.grpc/grpc-protobuf "1.31.1"]
                  [io.grpc/grpc-stub "1.31.1"]
+                 [io.envoyproxy.protoc-gen-validate/pgv-java-stub "0.4.1"]
                  [org.vdaas.vald/vald-client-java
                   #=(subs
                       #=(clojure.string/trim

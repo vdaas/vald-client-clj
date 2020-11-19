@@ -174,3 +174,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B21465%2Fvald-client-clj.svg?type=large)](https://app.fossa.com/projects/custom%2B21465%2Fvald-client-clj?ref=badge_large)

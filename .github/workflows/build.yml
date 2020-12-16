@@ -94,7 +94,7 @@ jobs:
           make
           make install
           export PATH=$PATH:/tmp/musl/bin
-          echo "PATH::/tmp/musl/bin:$PATH" >> $GITHUB_ENV
+          echo "PATH=/tmp/musl/bin:$PATH" >> $GITHUB_ENV
         env:
           MUSL_VERSION: 1.2.1
       - name: Build static native-image

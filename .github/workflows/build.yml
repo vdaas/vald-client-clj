@@ -31,9 +31,9 @@ jobs:
           mkdir -p $TMP_GRAALVM_HOME
           tar -xf graalvm.tar.gz -C $TMP_GRAALVM_HOME --strip-components=1
           chmod -R a+rwx $TMP_GRAALVM_HOME
-          echo "::set-env name=PATH::$GRAALVM_HOME/bin:$PATH"
-          echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
-          echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
+          echo "PATH=$GRAALVM_HOME/bin:$PATH" >> $GITHUB_ENV
+          echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
+          echo "JAVA_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
         env:
           GRAALVM_VERSION: 20.2.0
           JAVA_VERSION: java11
@@ -67,9 +67,9 @@ jobs:
           mkdir -p $TMP_GRAALVM_HOME
           tar -xf graalvm.tar.gz -C $TMP_GRAALVM_HOME --strip-components=1
           chmod -R a+rwx $TMP_GRAALVM_HOME
-          echo "::set-env name=PATH::$GRAALVM_HOME/bin:$PATH"
-          echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
-          echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
+          echo "PATH=$GRAALVM_HOME/bin:$PATH" >> $GITHUB_ENV
+          echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
+          echo "JAVA_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
         env:
           GRAALVM_VERSION: 20.2.0
           JAVA_VERSION: java11
@@ -94,7 +94,7 @@ jobs:
           make
           make install
           export PATH=$PATH:/tmp/musl/bin
-          echo "::set-env name=PATH::/tmp/musl/bin:$PATH"
+          echo "PATH::/tmp/musl/bin:$PATH" >> $GITHUB_ENV
         env:
           MUSL_VERSION: 1.2.1
       - name: Build static native-image
@@ -120,9 +120,9 @@ jobs:
           mkdir -p $TMP_GRAALVM_HOME
           tar -xf graalvm.tar.gz -C $TMP_GRAALVM_HOME --strip-components=1
           chmod -R a+rwx $TMP_GRAALVM_HOME
-          echo "::set-env name=PATH::$GRAALVM_HOME/bin:$PATH"
-          echo "::set-env name=GRAALVM_HOME::$GRAALVM_HOME"
-          echo "::set-env name=JAVA_HOME::$GRAALVM_HOME"
+          echo "PATH=$GRAALVM_HOME/bin:$PATH" >> $GITHUB_ENV
+          echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
+          echo "JAVA_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
         env:
           GRAALVM_VERSION: 20.2.0
           JAVA_VERSION: java11

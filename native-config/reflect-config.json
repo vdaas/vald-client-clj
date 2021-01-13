@@ -78,63 +78,284 @@
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.gateway.vald.ValdGrpc$ValdStub",
+  "name":"org.vdaas.vald.api.v1.vald.InsertGrpc$InsertStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.gateway.vald.ValdGrpc$ValdBlockingStub",
+  "name":"org.vdaas.vald.api.v1.vald.InsertGrpc$InsertBlockingStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.agent.core.AgentGrpc$AgentStub",
+  "name":"org.vdaas.vald.api.v1.vald.SearchGrpc$SearchStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.agent.core.AgentGrpc$AgentBlockingStub",
+  "name":"org.vdaas.vald.api.v1.vald.SearchGrpc$SearchBlockingStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Info$Index$Count",
+  "name":"org.vdaas.vald.api.v1.vald.UpdateGrpc$UpdateStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Object$ID",
+  "name":"org.vdaas.vald.api.v1.vald.UpdateGrpc$UpdateBlockingStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Object$IDs",
+  "name":"org.vdaas.vald.api.v1.vald.RemoveGrpc$RemoveStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Object$Vector",
+  "name":"org.vdaas.vald.api.v1.vald.RemoveGrpc$RemoveBlockingStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Object$Vectors",
+  "name":"org.vdaas.vald.api.v1.vald.UpsertGrpc$UpsertStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Object$Distance",
+  "name":"org.vdaas.vald.api.v1.vald.UpsertGrpc$UpsertBlockingStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Search$IDRequest$Builder",
+  "name":"org.vdaas.vald.api.v1.vald.ObjectGrpc$ObjectStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Search$Request$Builder",
+  "name":"org.vdaas.vald.api.v1.vald.ObjectGrpc$ObjectBlockingStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Search$Config$Builder",
+  "name":"org.vdaas.vald.api.v1.agent.core.AgentGrpc$AgentStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Search$Response",
+  "name":"org.vdaas.vald.api.v1.agent.core.AgentGrpc$AgentBlockingStub",
   "allPublicMethods":true
 },
 {
-  "name":"org.vdaas.vald.payload.Backup$MetaVector",
+  "name":"org.vdaas.vald.api.v1.payload.Insert$Request",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Insert$Request$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Insert$MultiRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Insert$MultiRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Insert$Config",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Insert$Config$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$Request",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$Request$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$IDRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$IDRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$Config",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$Config$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$MultiRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$MultiRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$MultiIDRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$MultiIDRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$Response",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$Responses",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Update$Request",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Update$Request$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Update$MultiRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Update$MultiRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Update$Config",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Update$Config$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Remove$Request",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Remove$Request$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Remove$MultiRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Remove$MultiRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Remove$Config",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Remove$Config$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Upsert$Request",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Upsert$Request$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Upsert$MultiRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Upsert$MultiRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Upsert$Config",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Upsert$Config$Builder",
+  "allPublicMethods":true
+},
+
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$ID",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$ID$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$IDs",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$IDs$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Vector",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Vector$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Vectors",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Vectors$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Location",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Location$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Distance",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$Distance$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Filter$Config",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Filter$Config$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Control$CreateIndexRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Control$CreateIndexRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Info$Index$Count",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Info$Index$Count$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Empty",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Empty$Builder",
   "allPublicMethods":true
 },
 {

@@ -59,12 +59,12 @@ valdcli: $(TARGET_JAR)
 	-H:Log=registerResource: \
 	-H:ConfigurationFileDirectories=native-config \
 	-H:+RemoveSaturatedTypeFlows \
-	--enable-url-protocols=http,https \
+	--enable-http \
+	--enable-https \
 	--enable-all-security-services \
 	--no-fallback \
 	--no-server \
 	--report-unsupported-elements-at-runtime \
-	--initialize-at-run-time=java.lang.Math\$$RandomNumberGeneratorHolder \
 	--initialize-at-build-time \
 	--allow-incomplete-classpath \
 	--verbose \

@@ -134,6 +134,10 @@
   "allPublicMethods":true
 },
 {
+  "name":"org.vdaas.vald.api.v1.errors.Errors$RPC",
+  "allPublicMethods":true
+},
+{
   "name":"org.vdaas.vald.api.v1.payload.Insert$Request",
   "allPublicMethods":true
 },
@@ -203,6 +207,14 @@
 },
 {
   "name":"org.vdaas.vald.api.v1.payload.Search$Responses",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$StreamResponse",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Search$StreamResponse$PayloadCase",
   "allPublicMethods":true
 },
 {
@@ -311,11 +323,27 @@
   "allPublicMethods":true
 },
 {
+  "name":"org.vdaas.vald.api.v1.payload.Object$StreamVector",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$StreamVector$PayloadCase",
+  "allPublicMethods":true
+},
+{
   "name":"org.vdaas.vald.api.v1.payload.Object$Location",
   "allPublicMethods":true
 },
 {
   "name":"org.vdaas.vald.api.v1.payload.Object$Location$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$StreamLocation",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$StreamLocation$PayloadCase",
   "allPublicMethods":true
 },
 {

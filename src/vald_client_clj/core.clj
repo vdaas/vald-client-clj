@@ -4,11 +4,13 @@
    [org.vdaas.vald.api.v1.vald
     InsertGrpc SearchGrpc UpdateGrpc RemoveGrpc UpsertGrpc ObjectGrpc]
    [org.vdaas.vald.api.v1.agent.core AgentGrpc]
+   [org.vdaas.vald.api.v1.errors Errors$RPC]
    [org.vdaas.vald.api.v1.payload
     Insert$Request Insert$MultiRequest Insert$Config
     Search$Request Search$IDRequest Search$Config
     Search$MultiRequest Search$MultiIDRequest
     Search$Response Search$Responses
+    Search$StreamResponse Search$StreamResponse$PayloadCase
     Update$Request Update$MultiRequest Update$Config
     Remove$Request Remove$MultiRequest Remove$Config
     Upsert$Request Upsert$MultiRequest Upsert$Config
@@ -16,6 +18,8 @@
     Object$Vector Object$Vectors
     Object$Location Object$Locations
     Object$Distance
+    Object$StreamLocation Object$StreamLocation$PayloadCase
+    Object$StreamVector Object$StreamVector$PayloadCase
     Filter$Config
     Control$CreateIndexRequest
     Info$Index$Count
@@ -88,6 +92,61 @@
   (-> res
       (.getResultsList)
       (->> (mapv object-distance->map))))
+
+(defn parse-errors-rpc [err]
+  {:type (.getType err)
+   :msg (.getMsg err)
+   :details (seq (.getDetailsList err))
+   :instance (.getInstance err)
+   :status (.getStatus err)
+   :error (.getError err)
+   :roots (seq (->> (.getRootsList err)
+                    (mapv parse-errors-rpc)))})
+
+(defn parse-stream-object-location [locs]
+  (let [pc (-> locs
+               (.getPayloadCase))]
+    (cond
+      (= pc Object$StreamLocation$PayloadCase/LOCATION)
+      (-> locs
+          (.getLocation)
+          (object-location->map))
+      (= pc Object$StreamLocation$PayloadCase/ERROR)
+      (-> locs
+          (.getError)
+          (parse-errors-rpc))
+      :else
+      {})))
+
+(defn parse-stream-object-vector [v]
+  (let [pc (-> v
+               (.getPayloadCase))]
+    (cond
+      (= pc Object$StreamVector$PayloadCase/VECTOR)
+      (-> v
+          (.getVector)
+          (object-vector->map))
+      (= pc Object$StreamVector$PayloadCase/ERROR)
+      (-> v
+          (.getError)
+          (parse-errors-rpc))
+      :else
+      {})))
+
+(defn parse-stream-search-response [res]
+  (let [pc (-> res
+               (.getPayloadCase))]
+    (cond
+      (= pc Search$StreamResponse$PayloadCase/RESPONSE)
+      (-> res
+          (.getResponse)
+          (parse-search-response))
+      (= pc Search$StreamResponse$PayloadCase/ERROR)
+      (-> res
+          (.getError)
+          (parse-errors-rpc))
+      :else
+      {})))
 
 (defn index-info-count->map [iic]
   {:stored (.getStored iic)
@@ -217,7 +276,7 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
-                              (-> (parse-search-response res)
+                              (-> (parse-stream-search-response res)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -248,7 +307,7 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
-                              (-> (parse-search-response res)
+                              (-> (parse-stream-search-response res)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -298,7 +357,7 @@
                             (onNext [this res]
                               (swap! cnt inc)
                               (-> res
-                                  (object-location->map)
+                                  (parse-stream-object-location)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -365,7 +424,7 @@
                             (onNext [this res]
                               (swap! cnt inc)
                               (-> res
-                                  (object-location->map)
+                                  (parse-stream-object-location)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -430,7 +489,7 @@
                             (onNext [this res]
                               (swap! cnt inc)
                               (-> res
-                                  (object-location->map)
+                                  (parse-stream-object-location)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -481,7 +540,7 @@
                           (reify StreamObserver
                             (onNext [this res]
                               (swap! cnt inc)
-                              (-> (object-vector->map res)
+                              (-> (parse-stream-object-vector res)
                                   (f)))
                             (onError [this throwable]
                               (deliver pm {:status :error
@@ -551,7 +610,7 @@
   (close client)
 
   (defn rand-vec []
-    (take 4096 (repeatedly #(float (rand)))))
+    (take 784 (repeatedly #(float (rand)))))
 
   (-> client
       (exists "test"))

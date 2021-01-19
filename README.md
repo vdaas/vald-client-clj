@@ -22,13 +22,6 @@ To use this library, one of the following libraries is required.
 (def client
   (vald/vald-client "localhost" 8081))
 
-;; vald agent
-(def agent-client
-  (vald/agent-client "localhost" 8081))
-;; NOTE:
-;;   gateway and agent have same interfaces.
-;;   These methods can also be used for agent client.
-
 (-> client
     (vald/stream-insert
       println
@@ -48,11 +41,7 @@ To use this library, one of the following libraries is required.
 (-> client
     (vald/search {:num 2} [0.1 0.2 0.3 0.3 0.3 0.4]))
 
-(-> agent-client
-    (vald/search {:num 2} [0.1 0.2 0.3 0.3 0.3 0.4]))
-
 (vald/close client)
-(vald/close agent-client)
 ```
 
 ## valdcli
@@ -81,31 +70,31 @@ Usage: valdcli [OPTIONS] ACTION
 
 Options:
       --help                  show usage
+      --version               show version
   -d, --debug                 debug mode
   -p, --port PORT  8080       Port number
   -h, --host HOST  localhost  Hostname
-  -a, --agent                 connect as an agent client
 
 Actions:
+  create-and-save-index Call create-and-save-index command. (only for Agent)
+  create-index          Call create-index command. (only for Agent)
   exists                Check whether ID exists or not.
+  get-object            Get object info of single ID.
+  index-info            Fetch index info. (only for Agent)
   insert                Insert single vector.
+  rand-vec              Prints randomized vector.
+  rand-vecs             Prints randomized vectors.
+  remove                Remove single ID.
+  save-index            Call save-index command. (only for Agent)
   search                Search single vector.
   search-by-id          Search vectors using single ID.
-  update                Update single vector.
-  remove                Remove single ID.
-  get-object            Get object info of single ID.
+  stream-get-object     Get object info of multiple IDs.
   stream-insert         Insert multiple vectors.
+  stream-remove         Remove multiple IDs.
   stream-search         Search multiple vectors.
   stream-search-by-id   Search vectors using multiple IDs.
   stream-update         Update multiple vectors.
-  stream-remove         Remove multiple IDs.
-  stream-get-object     Get object info of multiple IDs.
-  create-index          Call create-index command. (only for Agent)
-  save-index            Call save-index command. (only for Agent)
-  create-and-save-index Call create-and-save-index command. (only for Agent)
-  index-info            Fetch index info. (only for Agent)
-  rand-vec              Prints randomized vector.
-  rand-vecs             Prints randomized vectors.
+  update                Update single vector.
 ```
 
 It supports both EDN and JSON format data.
@@ -151,12 +140,6 @@ usages of each commands available by running:
 
 ```sh
 $ valdcli exists --help
-```
-
-To use as an agent client, it is recommended to have an alias like:
-
-```sh
-alias agentcli='valdcli --agent'
 ```
 
 ## License

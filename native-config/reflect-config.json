@@ -21,6 +21,14 @@
   ]
 },
 {
+  "name":"com.google.rpc.Status",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.protobuf.Any",
+  "allPublicMethods":true
+},
+{
   "name":"com.google.protobuf.ExtensionRegistry",
   "methods":[{"name":"getEmptyRegistry","parameterTypes":[] }]
 },
@@ -131,10 +139,6 @@
 },
 {
   "name":"org.vdaas.vald.api.v1.agent.core.AgentGrpc$AgentBlockingStub",
-  "allPublicMethods":true
-},
-{
-  "name":"org.vdaas.vald.api.v1.errors.Errors$RPC",
   "allPublicMethods":true
 },
 {

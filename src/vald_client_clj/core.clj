@@ -4,7 +4,6 @@
    [org.vdaas.vald.api.v1.vald
     InsertGrpc SearchGrpc UpdateGrpc RemoveGrpc UpsertGrpc ObjectGrpc]
    [org.vdaas.vald.api.v1.agent.core AgentGrpc]
-   [org.vdaas.vald.api.v1.errors Errors$RPC]
    [org.vdaas.vald.api.v1.payload
     Insert$Request Insert$MultiRequest Insert$Config
     Search$Request Search$IDRequest Search$Config
@@ -93,15 +92,16 @@
       (.getResultsList)
       (->> (mapv object-distance->map))))
 
+(defn parse-protobuf-any [a]
+  {:type-url (.getTypeUrl a)
+   :value (.getValue a)})
+
 (defn parse-errors-rpc [err]
-  {:type (.getType err)
-   :msg (.getMsg err)
-   :details (seq (.getDetailsList err))
-   :instance (.getInstance err)
-   :status (.getStatus err)
-   :error (.getError err)
-   :roots (seq (->> (.getRootsList err)
-                    (mapv parse-errors-rpc)))})
+  {:code (.getCode err)
+   :message (.getMessage err)
+   :details (->> err
+                 (.getDetailsList)
+                 (mapv parse-protobuf-any))})
 
 (defn parse-stream-object-location [locs]
   (let [pc (-> locs
@@ -111,9 +111,9 @@
       (-> locs
           (.getLocation)
           (object-location->map))
-      (= pc Object$StreamLocation$PayloadCase/ERROR)
+      (= pc Object$StreamLocation$PayloadCase/STATUS)
       (-> locs
-          (.getError)
+          (.getStatus)
           (parse-errors-rpc))
       :else
       {})))
@@ -126,9 +126,9 @@
       (-> v
           (.getVector)
           (object-vector->map))
-      (= pc Object$StreamVector$PayloadCase/ERROR)
+      (= pc Object$StreamVector$PayloadCase/STATUS)
       (-> v
-          (.getError)
+          (.getStatus)
           (parse-errors-rpc))
       :else
       {})))
@@ -141,9 +141,9 @@
       (-> res
           (.getResponse)
           (parse-search-response))
-      (= pc Search$StreamResponse$PayloadCase/ERROR)
+      (= pc Search$StreamResponse$PayloadCase/STATUS)
       (-> res
-          (.getError)
+          (.getStatus)
           (parse-errors-rpc))
       :else
       {})))

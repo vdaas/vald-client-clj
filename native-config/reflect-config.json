@@ -29,7 +29,23 @@
   "allPublicMethods":true
 },
 {
+  "name":"com.google.rpc.BadRequest$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.BadRequest$FieldViolation",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.BadRequest$FieldViolation$Builder",
+  "allPublicMethods":true
+},
+{
   "name":"com.google.rpc.DebugInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.DebugInfo$Builder",
   "allPublicMethods":true
 },
 {
@@ -37,7 +53,23 @@
   "allPublicMethods":true
 },
 {
+  "name":"com.google.rpc.ErrorInfo$Builder",
+  "allPublicMethods":true
+},
+{
   "name":"com.google.rpc.Help",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.Help$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.Help$Link",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.Help$Link$Builder",
   "allPublicMethods":true
 },
 {
@@ -45,7 +77,23 @@
   "allPublicMethods":true
 },
 {
+  "name":"com.google.rpc.LocalizedMessage$Builder",
+  "allPublicMethods":true
+},
+{
   "name":"com.google.rpc.PreconditionFailure",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.PreconditionFailure$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.PreconditionFailure$Violation",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.PreconditionFailure$Violation$Builder",
   "allPublicMethods":true
 },
 {
@@ -53,7 +101,23 @@
   "allPublicMethods":true
 },
 {
+  "name":"com.google.rpc.QuotaFailure$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.QuotaFailure$Violation",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.QuotaFailure$Violation$Builder",
+  "allPublicMethods":true
+},
+{
   "name":"com.google.rpc.RequestInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.RequestInfo$Builder",
   "allPublicMethods":true
 },
 {
@@ -61,7 +125,15 @@
   "allPublicMethods":true
 },
 {
+  "name":"com.google.rpc.ResourceInfo$Builder",
+  "allPublicMethods":true
+},
+{
   "name":"com.google.rpc.RetryInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.RetryInfo$Builder",
   "allPublicMethods":true
 },
 {

@@ -25,7 +25,51 @@
   "allPublicMethods":true
 },
 {
+  "name":"com.google.rpc.BadRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.DebugInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.ErrorInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.Help",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.LocalizedMessage",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.PreconditionFailure",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.QuotaFailure",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.RequestInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.ResourceInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.rpc.RetryInfo",
+  "allPublicMethods":true
+},
+{
   "name":"com.google.protobuf.Any",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.protobuf.Duration",
   "allPublicMethods":true
 },
 {
@@ -316,6 +360,14 @@
 },
 {
   "name":"org.vdaas.vald.api.v1.payload.Object$Vector$Builder",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$VectorRequest",
+  "allPublicMethods":true
+},
+{
+  "name":"org.vdaas.vald.api.v1.payload.Object$VectorRequest$Builder",
   "allPublicMethods":true
 },
 {

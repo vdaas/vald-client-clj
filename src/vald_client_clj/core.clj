@@ -1,4 +1,5 @@
 (ns vald-client-clj.core
+  (:require [clojure.string :as string])
   (:refer-clojure :exclude [update remove])
   (:import
    [org.vdaas.vald.api.v1.vald
@@ -14,6 +15,7 @@
     Remove$Request Remove$MultiRequest Remove$Config
     Upsert$Request Upsert$MultiRequest Upsert$Config
     Object$ID Object$IDs
+    Object$VectorRequest
     Object$Vector Object$Vectors
     Object$Location Object$Locations
     Object$Distance
@@ -24,7 +26,18 @@
     Info$Index$Count
     Empty]
    [io.grpc ManagedChannelBuilder]
-   [io.grpc.stub StreamObserver]))
+   [io.grpc.stub StreamObserver]
+   [com.google.rpc
+    BadRequest
+    DebugInfo
+    ErrorInfo
+    Help
+    LocalizedMessage
+    PreconditionFailure
+    QuotaFailure
+    RequestInfo
+    ResourceInfo
+    RetryInfo]))
 
 (defn ->filter-config [config]
   (-> (Filter$Config/newBuilder)
@@ -93,8 +106,61 @@
       (->> (mapv object-distance->map))))
 
 (defn parse-protobuf-any [a]
-  {:type-url (.getTypeUrl a)
-   :value (.getValue a)})
+  (let [turl (.getTypeUrl a)
+        t (keyword
+            (string/replace turl "type.googleapis.com/google.rpc." ""))
+        value (case t
+                :DebugInfo (let [info (.unpack a DebugInfo)]
+                             {:stack-entries (-> info
+                                                 (.getStackEntriesList))
+                              :details (.getDetail info)})
+                :RetryInfo (let [info (.unpack a RetryInfo)
+                                 duration (.getRetryDelay info)]
+                             {:retry-delay {:seconds (.getSeconds duration)
+                                            :nanos (.getNanos duration)}})
+                :QuotaFailure (let [fail (.unpack a QuotaFailure)
+                                    vio-> (fn [v]
+                                            {:subject (.getSubject v)
+                                             :description (.getDescription v)})]
+                                {:violations (->> (.getViolationsList fail)
+                                                  (mapv vio->))})
+                :ErrorInfo (let [info (.unpack a ErrorInfo)]
+                             {:reason (.getReason info)
+                              :domain (.getDomain info)
+                              :metadata (.getMetadata info)})
+                :PreconditionFailure (let [fail (.unpack a PreconditionFailure)
+                                           vio-> (fn [v]
+                                                   {:type (.getType v)
+                                                    :subject (.getSubject v)
+                                                    :description (.getDescription v)})]
+                                       {:violations (->> (.getViolationsList fail)
+                                                         (mapv vio->))})
+                :BadRequest (let [breq (.unpack a BadRequest)
+                                  vio-> (fn [v]
+                                          {:field (.getField v)
+                                           :description (.getDescription v)})]
+                              {:field-violations (->> (.getFieldViolationsList breq)
+                                                      (mapv vio->))})
+                :RequestInfo (let [info (.unpack a RequestInfo)]
+                               {:request-id (.getRequestId info)
+                                :serving-data (.getServingData info)})
+                :ResourceInfo (let [info (.unpack a ResourceInfo)]
+                                {:resource-type (.getResourceType info)
+                                 :resource-name (.getResourceName info)
+                                 :owner (.getOwner info)
+                                 :description (.getDescription info)})
+                :Help (let [h (.unpack a Help)
+                            link-> (fn [l]
+                                     {:description (.getDescription l)
+                                      :url (.getUrl l)})]
+                        {:links (->> (.getLinksList h)
+                                     (mapv link->))})
+                :LocalizedMessage (let [msg (.unpack a LocalizedMessage)]
+                                    {:locale (.getLocale msg)
+                                     :message (.getMessage msg)})
+                (.getValue a))]
+  {:type-url turl
+   :value value}))
 
 (defn parse-errors-rpc [err]
   {:code (.getCode err)
@@ -523,17 +589,22 @@
     (when (false? (.isShutdown channel))
       (let [id (-> (Object$ID/newBuilder)
                    (.setId id)
-                   (.build))]
+                   (.build))
+            req (-> (Object$VectorRequest/newBuilder)
+                    (.setId id)
+                    (.build))]
         (-> (ObjectGrpc/newBlockingStub channel)
-            (.getObject id)
+            (.getObject req)
             (object-vector->map)))))
   (stream-get-object [this f ids]
     (when (false? (.isShutdown channel))
       (let [pm (promise)
             cnt (atom 0)
             reqs (->> ids
-                      (mapv #(-> (Object$ID/newBuilder)
-                                 (.setId %)
+                      (mapv #(-> (Object$VectorRequest/newBuilder)
+                                 (.setId (-> (Object$ID/newBuilder)
+                                             (.setId %)
+                                             (.build)))
                                  (.build))))
             observer (-> (ObjectGrpc/newStub channel)
                          (.streamGetObject

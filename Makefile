@@ -12,7 +12,7 @@ all: clean
 
 .PHONY: clean
 clean:
-	rm -rf target
+	rm -rf target valdcli
 
 .PHONY: uberjar
 uberjar: $(TARGET_JAR)

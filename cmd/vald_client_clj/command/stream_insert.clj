@@ -13,7 +13,12 @@
    [nil "--skip-strict-exist-check" "skip strict exist check"
     :id :skip-strict-exist-check?]
    [nil "--elapsed-time" "show elapsed time the request took"
-    :id :elapsed-time?]])
+    :id :elapsed-time?]
+   ["-t" "--threads THREADS" "Number of threads"
+    :id :threads
+    :default 1
+    :parse-fn #(Integer/parseInt %)
+    :validate [pos? "Must be positive number"]]])
 
 (defn usage [summary]
   (->> ["Usage: valdcli [OPTIONS] stream-insert [SUBOPTIONS] VECTORS"
@@ -29,7 +34,7 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? json? skip-strict-exist-check? elapsed-time?]} options
+        {:keys [help? json? skip-strict-exist-check? elapsed-time? threads]} options
         read-string (if json?
                       util/read-json
                       edn/read-string)
@@ -44,13 +49,18 @@
       (let [vectors (-> (or (first arguments)
                             (util/read-from-stdin))
                         (read-string))
-            f (fn []
+            vss (partition-all (/ (count vectors) threads) vectors)
+            f (fn [vs]
                 (-> client
-                    (vald/stream-insert writer config vectors)
+                    (vald/stream-insert writer config vs)
                     (deref)))
-            res (if elapsed-time?
-                  (time (f))
-                  (f))]
+            res (->> (if elapsed-time?
+                       (time (doall (pmap f vss)))
+                       (doall (pmap f vss)))
+                     (apply merge-with (fn [x y]
+                                         (if (and (number? x) (number? y))
+                                           (+ x y)
+                                           x))))]
         (if (:error res)
           (throw (:error res))
           (->> res

@@ -11,7 +11,12 @@
    ["-j" "--json" "read and write as json"
     :id :json?]
    [nil "--elapsed-time" "show elapsed time the request took"
-    :id :elapsed-time?]])
+    :id :elapsed-time?]
+   ["-t" "--threads THREADS" "Number of threads"
+    :id :threads
+    :default 1
+    :parse-fn #(Integer/parseInt %)
+    :validate [pos? "Must be positive number"]]])
 
 (defn usage [summary]
   (->> ["Usage: valdcli [OPTIONS] stream-get-object [SUBOPTIONS] IDs"
@@ -26,7 +31,7 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? json? elapsed-time?]} options
+        {:keys [help? json? elapsed-time? threads]} options
         read-string (if json?
                       util/read-json
                       edn/read-string)
@@ -40,12 +45,17 @@
       (let [ids (-> (or (first arguments)
                         (util/read-from-stdin))
                     (read-string))
-            f (fn []
+            idss (partition-all (/ (count ids) threads) ids)
+            f (fn [ids]
                 (-> client
                     (vald/stream-get-object writer ids)
                     (deref)))
-            res (if elapsed-time?
-                  (time (f))
-                  (f))]
+            res (->> (if elapsed-time?
+                       (time (doall (pmap f idss)))
+                       (doall (pmap f idss)))
+                     (apply merge-with (fn [x y]
+                                         (if (and (number? x) (number? y))
+                                           (+ x y)
+                                           x))))]
         (when (:error res)
           (throw (:error res)))))))

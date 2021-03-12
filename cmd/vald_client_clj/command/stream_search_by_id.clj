@@ -12,6 +12,11 @@
     :id :json?]
    [nil "--elapsed-time" "show elapsed time the request took"
     :id :elapsed-time?]
+   ["-t" "--threads THREADS" "Number of threads"
+    :id :threads
+    :default 1
+    :parse-fn #(Integer/parseInt %)
+    :validate [pos? "Must be positive number"]]
    ["-n" "--num NUM"
     :id :num
     :default 10
@@ -42,7 +47,8 @@
 (defn run [client args]
   (let [parsed-result (cli/parse-opts args cli-options)
         {:keys [options summary arguments]} parsed-result
-        {:keys [help? json? elapsed-time? num radius epsilon timeout]} options
+        {:keys [help? json? elapsed-time? threads
+                num radius epsilon timeout]} options
         read-string (if json?
                       util/read-json
                       edn/read-string)
@@ -60,12 +66,17 @@
       (let [ids (-> (or (first arguments)
                         (util/read-from-stdin))
                     (read-string))
-            f (fn []
+            idss (partition-all (/ (count ids) threads) ids)
+            f (fn [ids]
                 (-> client
                     (vald/stream-search-by-id writer config ids)
                     (deref)))
-            res (if elapsed-time?
-                  (time (f))
-                  (f))]
+            res (->> (if elapsed-time?
+                       (time (doall (pmap f idss)))
+                       (doall (pmap f idss)))
+                     (apply merge-with (fn [x y]
+                                         (if (and (number? x) (number? y))
+                                           (+ x y)
+                                           x))))]
         (when (:error res)
           (throw (:error res)))))))

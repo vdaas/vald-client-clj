@@ -28,8 +28,7 @@
                              [io.grpc/grpc-okhttp "1.35.0"
                               :exclusions [io.grpc/grpc-core]]
                              [metosin/jsonista "0.3.0"]
-                             [camel-snake-kebab "0.4.2"]
-                             [borkdude/clj-reflector-graal-java11-fix "0.0.1-graalvm-20.3.0"]]
+                             [camel-snake-kebab "0.4.2"]]
               :aot :all
               :global-vars {*assert* false}
               :main vald-client-clj.cmd}})

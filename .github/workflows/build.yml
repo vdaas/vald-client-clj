@@ -35,7 +35,7 @@ jobs:
           echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
           echo "JAVA_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
         env:
-          GRAALVM_VERSION: 20.3.0
+          GRAALVM_VERSION: 21.0.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
@@ -71,7 +71,7 @@ jobs:
           echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
           echo "JAVA_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
         env:
-          GRAALVM_VERSION: 20.3.0
+          GRAALVM_VERSION: 21.0.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |
@@ -124,7 +124,7 @@ jobs:
           echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
           echo "JAVA_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
         env:
-          GRAALVM_VERSION: 20.3.0
+          GRAALVM_VERSION: 21.0.0
           JAVA_VERSION: java11
       - name: Install dependencies
         run: |

@@ -178,6 +178,10 @@
   "allPublicMethods":true
 },
 {
+  "name":"java.lang.reflect.AccessibleObject",
+  "methods":[{"name":"canAccess"}]
+},
+{
   "name":"java.net.InetSocketAddress",
   "methods":[{"name":"getHostString","parameterTypes":[] }]
 },

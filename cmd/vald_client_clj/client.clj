@@ -11,6 +11,8 @@
    [vald-client-clj.command.stream-search-by-id :as command.stream-search-by-id]
    [vald-client-clj.command.update :as command.update]
    [vald-client-clj.command.stream-update :as command.stream-update]
+   [vald-client-clj.command.upsert :as command.upsert]
+   [vald-client-clj.command.stream-upsert :as command.stream-upsert]
    [vald-client-clj.command.remove :as command.remove]
    [vald-client-clj.command.stream-remove :as command.stream-remove]
    [vald-client-clj.command.get-object :as command.get-object]
@@ -58,6 +60,14 @@
    {:description "Update multiple vectors."
     :client? true
     :cli-fn command.stream-update/run}
+   :upsert
+   {:description "Upsert single vector."
+    :client? true
+    :cli-fn command.upsert/run}
+   :stream-upsert
+   {:description "Upsert multiple vectors."
+    :client? true
+    :cli-fn command.stream-upsert/run}
    :remove
    {:description "Remove single ID."
     :client? true

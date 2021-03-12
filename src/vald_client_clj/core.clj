@@ -71,6 +71,14 @@
                             (->filter-config (:filters config))))
       (.build)))
 
+(defn ->upsert-config [config]
+  (-> (Upsert$Config/newBuilder)
+      (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
+      (cond->
+        (:filters config) (.setFilters
+                            (->filter-config (:filters config))))
+      (.build)))
+
 (defn ->remove-config [config]
   (-> (Remove$Config/newBuilder)
       (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
@@ -261,6 +269,16 @@
   (multi-update
     [this config vectors]
     "Multi update with `vectors`.")
+  (upsert
+    [this config id vector]
+    "Upsert `id` and `vector` pair.")
+  (stream-upsert
+    [this f config vectors]
+    "Stream upsert with `vectors`.
+    `f` will be applied to each responses.")
+  (multi-upsert
+    [this config vectors]
+    "Multi upsert with `vectors`.")
   (remove-id
     [this config id]
     "Remove `id`.")
@@ -522,6 +540,73 @@
                     (.addAllRequests reqs))]
         (-> (UpdateGrpc/newBlockingStub channel)
             (.multiUpdate req)
+            (object-locations->map)))))
+  (upsert [this config id vector]
+    (when (false? (.isShutdown channel))
+      (let [config (->upsert-config config)
+            v (-> (Object$Vector/newBuilder)
+                  (.setId id)
+                  (.addAllVector (seq (map float vector)))
+                  (.build))
+            req (-> (Upsert$Request/newBuilder)
+                    (.setVector v)
+                    (.setConfig config)
+                    (.build))]
+        (-> (UpsertGrpc/newBlockingStub channel)
+            (.upsert req)
+            (object-location->map)))))
+  (stream-upsert [this f config vectors]
+    (when (false? (.isShutdown channel))
+      (let [pm (promise)
+            cnt (atom 0)
+            config (->upsert-config config)
+            reqs (->> vectors
+                      (map #(-> (Object$Vector/newBuilder)
+                                (.setId (:id %))
+                                (.addAllVector (seq (map float (:vector %))))
+                                (.build)))
+                      (mapv #(-> (Upsert$Request/newBuilder)
+                                 (.setVector %)
+                                 (.setConfig config)
+                                 (.build))))
+            observer (-> (UpsertGrpc/newStub channel)
+                         (.streamUpsert
+                           (reify StreamObserver
+                             (onNext [this res]
+                               (swap! cnt inc)
+                               (-> res
+                                   (parse-stream-object-location)
+                                   (f)))
+                            (onError [this throwable]
+                              (deliver pm {:status :error
+                                           :error throwable
+                                           :count @cnt}))
+                            (onCompleted [this]
+                              (deliver pm {:status :done
+                                           :count @cnt})))))]
+        (->> reqs
+             (map #(-> ^StreamObserver observer
+                       (.onNext %)))
+             (doall))
+        (-> ^StreamObserver observer
+            (.onCompleted))
+        pm)))
+  (multi-upsert [this config vectors]
+    (when (false? (.isShutdown channel))
+      (let [config (->upsert-config config)
+            reqs (->> vectors
+                      (map #(-> (Object$Vector/newBuilder)
+                                (.setId (:id %))
+                                (.addAllVector (seq (map float (:vector %))))
+                                (.build)))
+                      (mapv #(-> (Upsert$Request/newBuilder)
+                                 (.setVector %)
+                                 (.setConfig config)
+                                 (.build))))
+            req (-> (Upsert$MultiRequest/newBuilder)
+                    (.addAllRequests reqs))]
+        (-> (UpsertGrpc/newBlockingStub channel)
+            (.multiUpsert req)
             (object-locations->map)))))
   (remove-id [this config id]
     (when (false? (.isShutdown channel))

@@ -21,7 +21,7 @@
     Object$Distance
     Object$StreamLocation Object$StreamLocation$PayloadCase
     Object$StreamVector Object$StreamVector$PayloadCase
-    Filter$Config
+    Filter$Config Filter$Target
     Control$CreateIndexRequest
     Info$Index$Count
     Empty]
@@ -39,44 +39,66 @@
     ResourceInfo
     RetryInfo]))
 
+(defn ->filter-target [target]
+  (-> (Filter$Target/newBuilder)
+      (.setHost (or (:host target) ""))
+      (.setPort (or (:port target) 0))
+      (.build)))
+
 (defn ->filter-config [config]
   (-> (Filter$Config/newBuilder)
-      (.setAllTargets (:targets config))
+      (.addAllTargets (seq (map ->filter-target (:targets config))))
       (.build)))
 
 (defn ->search-config [config]
   (-> (Search$Config/newBuilder)
       (.setNum (or (:num config) 10))
       (.setRadius (or (:radius config) -1.0))
-      (.setEpsilon (or (:epsilon config) 0.01))
+      (.setEpsilon (or (:epsilon config) 0.1))
       (.setTimeout (or (:timeout config) 3000000000))
       (cond->
-        (:filters config) (.setFilters
-                            (->filter-config (:filters config))))
+        (:ingress-filters config)
+        (.setIngressFilters
+          (->filter-config (:ingress-filters config)))
+        (:egress-filters config)
+        (.setEgressFilters
+          (->filter-config (:egress-filters config))))
       (.build)))
 
 (defn ->insert-config [config]
   (-> (Insert$Config/newBuilder)
       (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
       (cond->
-        (:filters config) (.setFilters
-                            (->filter-config (:filters config))))
+        (:ingress-filters config)
+        (.setIngressFilters
+          (->filter-config (:ingress-filters config)))
+        (:egress-filters config)
+        (.setEgressFilters
+          (->filter-config (:egress-filters config))))
       (.build)))
 
 (defn ->update-config [config]
   (-> (Update$Config/newBuilder)
       (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
       (cond->
-        (:filters config) (.setFilters
-                            (->filter-config (:filters config))))
+        (:ingress-filters config)
+        (.setIngressFilters
+          (->filter-config (:ingress-filters config)))
+        (:egress-filters config)
+        (.setEgressFilters
+          (->filter-config (:egress-filters config))))
       (.build)))
 
 (defn ->upsert-config [config]
   (-> (Upsert$Config/newBuilder)
       (.setSkipStrictExistCheck (or (:skip-strict-exist-check config) false))
       (cond->
-        (:filters config) (.setFilters
-                            (->filter-config (:filters config))))
+        (:ingress-filters config)
+        (.setIngressFilters
+          (->filter-config (:ingress-filters config)))
+        (:egress-filters config)
+        (.setEgressFilters
+          (->filter-config (:egress-filters config))))
       (.build)))
 
 (defn ->remove-config [config]
@@ -772,6 +794,10 @@
       (exists "test"))
   (-> client
       (search {:num 10} (rand-vec)))
+  (-> client
+      (search {:num 10
+               :egress-filters {:targets [{:host "distance-filtering"
+                                           :port 8080}]}} (rand-vec)))
   (-> client
       (search-by-id {:num 10} "test"))
 

@@ -22,7 +22,7 @@
     :parse-fn #(Float/parseFloat %)]
    ["-e" "--epsilon EPSILON"
     :id :epsilon
-    :default 0.01
+    :default 0.1
     :parse-fn #(Float/parseFloat %)]
    ["-t" "--timeout TIMEOUT"
     :id :timeout

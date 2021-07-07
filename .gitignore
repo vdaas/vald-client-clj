@@ -11,3 +11,5 @@ pom.xml.asc
 .hgignore
 .hg/
 /valdcli
+
+wordvecs1000.json

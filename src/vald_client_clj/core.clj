@@ -135,6 +135,11 @@
       (.getResultsList)
       (->> (mapv object-distance->map))))
 
+(defn parse-search-responses [res]
+  (-> res
+      (.getResponsesList)
+      (->> (mapv parse-search-response))))
+
 (defn parse-protobuf-any [a]
   (let [turl (.getTypeUrl a)
         t (keyword
@@ -271,6 +276,12 @@
     [this f config ids]
     "Stream search with `ids`
     `f` will be applied to each responses.")
+  (multi-search
+    [this config vectors]
+    "Multi search with `vectors`.")
+  (multi-search-by-id
+    [this config ids]
+    "Multi search-by-id with `ids`.")
   (insert
     [this config id vector]
     "Insert `id` and `vector` pair.")
@@ -429,6 +440,34 @@
         (-> ^StreamObserver observer
             (.onCompleted))
         pm)))
+  (multi-search [this config vectors]
+    (when (false? (.isShutdown channel))
+      (let [config (->search-config config)
+            reqs (->> vectors
+                      (mapv #(-> (Search$Request/newBuilder)
+                                 (.addAllVector (seq (map float %)))
+                                 (.setConfig config)
+                                 (.build))))
+            req (-> (Search$MultiRequest/newBuilder)
+                    (.addAllRequests reqs)
+                    (.build))]
+        (-> (SearchGrpc/newBlockingStub channel)
+            (.multiSearch req)
+            (parse-search-responses)))))
+  (multi-search-by-id [this config ids]
+    (when (false? (.isShutdown channel))
+      (let [config (->search-config config)
+            reqs (->> ids
+                      (mapv #(-> (Search$IDRequest/newBuilder)
+                                 (.setId %)
+                                 (.setConfig config)
+                                 (.build))))
+            req (-> (Search$MultiIDRequest/newBuilder)
+                    (.addAllRequests reqs)
+                    (.build))]
+        (-> (SearchGrpc/newBlockingStub channel)
+            (.multiSearchByID req)
+            (parse-search-responses)))))
   (insert [this config id vector]
     (when (false? (.isShutdown channel))
       (let [v (-> (Object$Vector/newBuilder)
@@ -492,7 +531,8 @@
                                  (.setConfig config)
                                  (.build))))
             req (-> (Insert$MultiRequest/newBuilder)
-                    (.addAllRequests reqs))]
+                    (.addAllRequests reqs)
+                    (.build))]
         (-> (InsertGrpc/newBlockingStub channel)
             (.multiInsert req)
             (object-locations->map)))))
@@ -559,7 +599,8 @@
                                  (.setConfig config)
                                  (.build))))
             req (-> (Update$MultiRequest/newBuilder)
-                    (.addAllRequests reqs))]
+                    (.addAllRequests reqs)
+                    (.build))]
         (-> (UpdateGrpc/newBlockingStub channel)
             (.multiUpdate req)
             (object-locations->map)))))
@@ -626,7 +667,8 @@
                                  (.setConfig config)
                                  (.build))))
             req (-> (Upsert$MultiRequest/newBuilder)
-                    (.addAllRequests reqs))]
+                    (.addAllRequests reqs)
+                    (.build))]
         (-> (UpsertGrpc/newBlockingStub channel)
             (.multiUpsert req)
             (object-locations->map)))))
@@ -682,6 +724,9 @@
     (when (false? (.isShutdown channel))
       (let [config (->remove-config config)
             reqs (->> ids
+                      (map #(-> (Object$ID/newBuilder)
+                                 (.setId %)
+                                 (.build)))
                       (mapv #(-> (Remove$Request/newBuilder)
                                  (.setId %)
                                  (.setConfig config)

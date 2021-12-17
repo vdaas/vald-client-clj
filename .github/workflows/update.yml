@@ -23,7 +23,7 @@ jobs:
             exit 0
           fi
 
-          VERSION=`curl -s "http://search.maven.org/solrsearch/select?q=vald-client-java&rows=20&wt=json&start=0" | jq -r '.response.docs[] | select(.a == "vald-client-java") | .latestVersion'`
+          VERSION=`curl -sL "http://search.maven.org/solrsearch/select?q=vald-client-java&rows=20&wt=json&start=0" | jq -r '.response.docs[] | select(.a == "vald-client-java") | .latestVersion'`
           VERSION="v${VERSION}"
 
           if [ "$CURRENT_VERSION" = "${VERSION}" ];then

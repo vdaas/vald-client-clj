@@ -22,7 +22,7 @@ jobs:
           curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
           chmod a+x lein
           sudo ./lein version
-      - uses: rinx/setup-k3d@v0.0.2
+      - uses: rinx/setup-k3d@v0.0.4
         with:
           version: latest
           name: vald
@@ -30,7 +30,7 @@ jobs:
       - name: check k3d
         run: |
           kubectl cluster-info
-      - uses: azure/setup-helm@v1
+      - uses: azure/setup-helm@v2.0
       - name: Helm version
         run: |
           helm version
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein

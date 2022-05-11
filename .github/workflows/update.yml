@@ -12,6 +12,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Run gitwerk semver-auto
         run: |
           CURRENT_VERSION=`cat VALD_CLIENT_CLJ_VERSION`
@@ -33,11 +34,11 @@ jobs:
 
           echo "${VERSION}" > VALD_CLIENT_CLJ_VERSION
 
-          git checkout master
-
           git config --global user.name "VDaaS org"
           git config --global user.email "ci@vdaas.org"
+          git remote set-url origin "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
+          git checkout master
           git add VALD_CLIENT_CLJ_VERSION
           git commit --signoff -m ":bookmark: Release ${VERSION}"
 

@@ -34,12 +34,18 @@ jobs:
 
           echo "${VERSION}" > VALD_CLIENT_CLJ_VERSION
 
+          curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+          chmod a+x lein
+          ./lein pom
+          rm lein
+
           git config --global user.name "VDaaS org"
           git config --global user.email "ci@vdaas.org"
           git remote set-url origin "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
           git checkout master
           git add VALD_CLIENT_CLJ_VERSION
+          git add pom.xml
           git commit --signoff -m ":bookmark: Release ${VERSION}"
 
           git tag ${VERSION}

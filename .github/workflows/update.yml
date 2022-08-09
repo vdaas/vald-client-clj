@@ -16,7 +16,7 @@ jobs:
       - name: Run gitwerk semver-auto
         run: |
           CURRENT_VERSION=`cat VALD_CLIENT_CLJ_VERSION`
-          VERSION=`curl -s https://raw.githubusercontent.com/vdaas/vald-client-java/master/version/VALD_CLIENT_JAVA_VERSION`
+          VERSION=`curl -s https://raw.githubusercontent.com/vdaas/vald-client-java/main/version/VALD_CLIENT_JAVA_VERSION`
           VERSION="v${VERSION}"
 
           if [ "$CURRENT_VERSION" = "${VERSION}" ];then
@@ -43,7 +43,7 @@ jobs:
           git config --global user.email "ci@vdaas.org"
           git remote set-url origin "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-          git checkout master
+          git checkout main
           git add VALD_CLIENT_CLJ_VERSION
           git add pom.xml
           git commit --signoff -m ":bookmark: Release ${VERSION}"
@@ -51,7 +51,7 @@ jobs:
           git tag ${VERSION}
           git remote set-url origin "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-          git push origin master
+          git push origin main
           git push origin ${VERSION}
         env:
           GITHUB_USER: ${{ secrets.VALDCLI_USER }}

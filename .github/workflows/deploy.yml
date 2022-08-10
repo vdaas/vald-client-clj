@@ -2,7 +2,7 @@ name: E2E test and Deploy to Clojars
 on:
   push:
     branches:
-      - master
+      - main
     tags:
       - '*.*.*'
       - 'v*.*.*'
@@ -51,7 +51,7 @@ jobs:
           kubectl wait --for=condition=ready pod -l app=vald-agent-ngt --timeout=3m
           kubectl get pods
         env:
-          VALUES: https://raw.githubusercontent.com/vdaas/vald/master/.github/helm/values/values-lb.yaml
+          VALUES: https://raw.githubusercontent.com/vdaas/vald/main/.github/helm/values/values-lb.yaml
       - name: Download data
         run: |
           curl -OL https://raw.githubusercontent.com/rinx/word2vecjson/master/data/wordvecs1000.json

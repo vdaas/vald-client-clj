@@ -1,6 +1,6 @@
 # vald-client-clj / valdcli
 
-[![LICENSE](https://img.shields.io/github/license/vdaas/vald-client-clj?style=flat-square)](https://github.com/vdaas/vald-client-clj/blob/master/LICENSE)
+[![LICENSE](https://img.shields.io/github/license/vdaas/vald-client-clj?style=flat-square)](https://github.com/vdaas/vald-client-clj/blob/main/LICENSE)
 [![release](https://img.shields.io/github/v/release/vdaas/vald-client-clj?style=flat-square)](https://github.com/vdaas/vald-client-clj/releases)
 [![Clojars Project](https://img.shields.io/clojars/v/vald-client-clj.svg?style=flat-square)](https://clojars.org/vald-client-clj)
 

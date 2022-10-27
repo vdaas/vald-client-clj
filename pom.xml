@@ -86,7 +86,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.47.0</version>
+      <version>1.49.2</version>
     </dependency>
     <dependency>
       <groupId>io.envoyproxy.protoc-gen-validate</groupId>

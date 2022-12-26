@@ -71,27 +71,27 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.47.0</version>
+      <version>1.51.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.47.0</version>
+      <version>1.51.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.47.0</version>
+      <version>1.51.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.47.0</version>
+      <version>1.51.1</version>
     </dependency>
     <dependency>
       <groupId>io.envoyproxy.protoc-gen-validate</groupId>
       <artifactId>pgv-java-stub</artifactId>
-      <version>0.6.7</version>
+      <version>0.6.13</version>
     </dependency>
     <dependency>
       <groupId>org.vdaas.vald</groupId>
@@ -101,7 +101,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-okhttp</artifactId>
-      <version>1.47.0</version>
+      <version>1.51.1</version>
       <exclusions>
         <exclusion>
           <artifactId>grpc-core</artifactId>

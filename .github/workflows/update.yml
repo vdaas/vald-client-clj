@@ -21,7 +21,6 @@ jobs:
             echo "the version is empty"
             exit 0
           fi
-
           VERSION="v${VERSION}"
 
           if [ "$CURRENT_VERSION" = "${VERSION}" ];then
@@ -30,6 +29,10 @@ jobs:
           fi
 
           VERSION=`curl -sL "http://search.maven.org/solrsearch/select?q=vald-client-java&rows=20&wt=json&start=0" | jq -r '.response.docs[] | select(.a == "vald-client-java") | .latestVersion'`
+          if [ "" = "${VERSION}" ]; then
+            echo "maven version is empty"
+            exit 0
+          fi
           VERSION="v${VERSION}"
 
           if [ "$CURRENT_VERSION" = "${VERSION}" ];then

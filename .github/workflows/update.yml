@@ -16,7 +16,11 @@ jobs:
       - name: Run gitwerk semver-auto
         run: |
           CURRENT_VERSION=`cat VALD_CLIENT_CLJ_VERSION`
-          VERSION=`curl -s https://raw.githubusercontent.com/vdaas/vald-client-java/main/version/VALD_CLIENT_JAVA_VERSION`
+          VERSION=`curl -s https://api.github.com/repos/vdaas/vald-client-java/releases/latest | jq '.tag_name'`
+          if [ "" = "${VERSION}" ]; then
+            echo "the version is empty"
+            exit 0
+          fi
           VERSION="v${VERSION}"
 
           if [ "$CURRENT_VERSION" = "${VERSION}" ];then
@@ -25,6 +29,10 @@ jobs:
           fi
 
           VERSION=`curl -sL "http://search.maven.org/solrsearch/select?q=vald-client-java&rows=20&wt=json&start=0" | jq -r '.response.docs[] | select(.a == "vald-client-java") | .latestVersion'`
+          if [ "" = "${VERSION}" ]; then
+            echo "maven version is empty"
+            exit 0
+          fi
           VERSION="v${VERSION}"
 
           if [ "$CURRENT_VERSION" = "${VERSION}" ];then

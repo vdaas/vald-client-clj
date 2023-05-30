@@ -71,7 +71,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.53.0</version>
+      <version>1.54.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>

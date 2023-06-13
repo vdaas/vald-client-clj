@@ -4,7 +4,7 @@
   <groupId>vald-client-clj</groupId>
   <artifactId>vald-client-clj</artifactId>
   <packaging>jar</packaging>
-  <version>v1.7.5</version>
+  <version>v1.7.6</version>
   <name>vald-client-clj</name>
   <description>A client library for Vald.</description>
   <url>https://github.com/vdaas/vald-client-clj</url>
@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>a6b77de490840995142777fc5c6c0610a4d4c046</tag>
+    <tag>3d821fe30bd5f26ffe378297f2e9c169a1e30c3a</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -71,22 +71,22 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.53.0</version>
+      <version>1.55.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.53.0</version>
+      <version>1.55.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.53.0</version>
+      <version>1.55.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.53.0</version>
+      <version>1.55.1</version>
     </dependency>
     <dependency>
       <groupId>io.envoyproxy.protoc-gen-validate</groupId>
@@ -96,12 +96,12 @@
     <dependency>
       <groupId>org.vdaas.vald</groupId>
       <artifactId>vald-client-java</artifactId>
-      <version>1.7.5</version>
+      <version>1.7.6</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-okhttp</artifactId>
-      <version>1.53.0</version>
+      <version>1.55.1</version>
       <exclusions>
         <exclusion>
           <artifactId>grpc-core</artifactId>
@@ -113,13 +113,13 @@
     <dependency>
       <groupId>metosin</groupId>
       <artifactId>jsonista</artifactId>
-      <version>0.3.3</version>
+      <version>0.3.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>camel-snake-kebab</groupId>
       <artifactId>camel-snake-kebab</artifactId>
-      <version>0.4.2</version>
+      <version>0.4.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

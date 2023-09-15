@@ -13,6 +13,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
       - name: Run gitwerk semver-auto
         run: |
           CURRENT_VERSION=`cat VALD_CLIENT_CLJ_VERSION`

@@ -20,7 +20,7 @@ jobs:
           git_commit_gpgsign: true
       - name: Run gitwerk semver-auto
         run: |
-          CURRENT_VERSION=`cat ./VALD_CLIENT_CLJ_VERSION`
+          CURRENT_VERSION=`cat VALD_CLIENT_CLJ_VERSION`
           VERSION=`curl -s https://api.github.com/repos/vdaas/vald-client-java/releases/latest | jq '.tag_name'`
           if [ "" = "${VERSION}" ]; then
             echo "the version is empty"
@@ -33,7 +33,7 @@ jobs:
             exit 0
           fi
 
-          VERSION=`curl -sL "http://search.maven.org/solrsearch/select?q=vald-client-java&rows=20&wt=json&start=0" | jq -r '.response.docs[] | select(.a == "vald-client-java") | .latestVersion'`
+          VERSION=`curl -fsSL https://repo1.maven.org/maven2/org/vdaas/vald/vald-client-java/ | grep '<a href=' | sed -n 's/.*title="\([^"]*\)\/".*/\1/p' | sort | uniq | tail -n 1`
           if [ "" = "${VERSION}" ]; then
             echo "maven version is empty"
             exit 0

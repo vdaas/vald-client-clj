@@ -94,6 +94,11 @@
       <version>0.6.13</version>
     </dependency>
     <dependency>
+      <groupId>build.buf</groupId>
+      <artifactId>protovalidate</artifactId>
+      <version>0.1.8</version>
+    </dependency>
+    <dependency>
       <groupId>org.vdaas.vald</groupId>
       <artifactId>vald-client-java</artifactId>
       <version>1.7.9</version>

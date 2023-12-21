@@ -14,6 +14,7 @@
                  [io.grpc/grpc-protobuf "1.58.0"]
                  [io.grpc/grpc-stub "1.58.0"]
                  [io.envoyproxy.protoc-gen-validate/pgv-java-stub "0.6.13"]
+                 [build.buf/protovalidate "0.1.8"]
                  [org.vdaas.vald/vald-client-java
                   #=(subs
                       #=(clojure.string/trim

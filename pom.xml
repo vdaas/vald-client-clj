@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.vdaas.vald</groupId>
       <artifactId>vald-client-java</artifactId>
-      <version>1.7.9</version>
+      <version>1.7.10</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>

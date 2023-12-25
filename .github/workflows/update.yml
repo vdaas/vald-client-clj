@@ -21,29 +21,30 @@ jobs:
       - name: Run gitwerk semver-auto
         run: |
           CURRENT_VERSION=`cat VALD_CLIENT_CLJ_VERSION`
-          VERSION=`curl -s https://api.github.com/repos/vdaas/vald-client-java/releases/latest | jq '.tag_name'`
-          if [ "" = "${VERSION}" ]; then
+          GITHUB_LATEST_VERSION=`curl -s https://api.github.com/repos/vdaas/vald-client-java/releases/latest | jq -r '.tag_name'`
+          if [ "" = "${GITHUB_LATEST_VERSION}" ]; then
             echo "the version is empty"
             exit 0
           fi
-          VERSION="v${VERSION}"
 
-          if [ "$CURRENT_VERSION" = "${VERSION}" ];then
-            echo "not updated"
+          if [ "${CURRENT_VERSION}" = "v${GITHUB_LATEST_VERSION}" ]; then
+            echo "vald-client-java latest version in GitHub is ${GITHUB_LATEST_VERSION}. GitHub is not updated"
             exit 0
           fi
 
-          VERSION=`curl -fsSL https://repo1.maven.org/maven2/org/vdaas/vald/vald-client-java/ | grep '<a href=' | sed -n 's/.*title="\([^"]*\)\/".*/\1/p' | sort | uniq | tail -n 1`
-          if [ "" = "${VERSION}" ]; then
-            echo "maven version is empty"
+          MAVEN_LATEST_VERSION=`curl -fsSL https://search.maven.org/solrsearch/select?q=vald-client-java&rows=1&wt=json | jq -r '.response.docs[0].latestVersion'`
+          if [ "${CURRENT_VERSION}" = "v${MAVEN_LATEST_VERSION}" ]; then
+            echo "vald-client-java latest version in maven is ${MAVEN_LATEST_VERSION}. maven's version is not updated"
             exit 0
           fi
-          VERSION="v${VERSION}"
 
-          if [ "$CURRENT_VERSION" = "${VERSION}" ];then
-            echo "not uploaded to maven repository"
+          STATUS_CODE=`curl -fsSLI https://repo1.maven.org/maven2/org/vdaas/vald/vald-client-java/${MAVEN_LATEST_VERSION} -o /dev/null -w '%{http_code}' 2> /dev/null`
+          if [ "${STATUS_CODE}" != "200" ]; then
+            echo "vald-client-java has not been uploaded to maven repository yet"
             exit 0
           fi
+
+          VERSION="v${MAVEN_LATEST_VERSION}"
 
           echo "${VERSION}" > VALD_CLIENT_CLJ_VERSION
 

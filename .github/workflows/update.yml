@@ -32,7 +32,7 @@ jobs:
             exit 0
           fi
 
-          MAVEN_LATEST_VERSION=`curl -fsSL https://search.maven.org/solrsearch/select?q=vald-client-java&rows=1&wt=json | jq -r '.response.docs[0].latestVersion'`
+          MAVEN_LATEST_VERSION=`curl -fsSL "https://search.maven.org/solrsearch/select?q=vald-client-java&rows=1&wt=json" | jq -r '.response.docs[0].latestVersion'`
           if [ "${CURRENT_VERSION}" = "v${MAVEN_LATEST_VERSION}" ]; then
             echo "vald-client-java latest version in maven is ${MAVEN_LATEST_VERSION}. maven's version is not updated"
             exit 0

@@ -33,19 +33,13 @@ jobs:
             exit 0
           fi
 
-          MAVEN_LATEST_VERSION=`curl -fsSL "https://search.maven.org/solrsearch/select?q=vald-client-java&rows=1&wt=json" | jq -r '.response.docs[0].latestVersion'`
-          if [ "${CURRENT_VERSION}" = "v${MAVEN_LATEST_VERSION}" ]; then
-            echo "vald-client-java latest version in maven is ${MAVEN_LATEST_VERSION}. maven's version is not updated"
-            exit 0
-          fi
-
-          STATUS_CODE=`curl -fsSLI https://repo1.maven.org/maven2/org/vdaas/vald/vald-client-java/${MAVEN_LATEST_VERSION} -o /dev/null -w '%{http_code}' 2> /dev/null`
+          STATUS_CODE=`curl -fsSLI https://repo1.maven.org/maven2/org/vdaas/vald/vald-client-java/${GITHUB_LATEST_VERSION} -o /dev/null -w '%{http_code}' 2> /dev/null`
           if [ "${STATUS_CODE}" != "200" ]; then
             echo "vald-client-java has not been uploaded to maven repository yet"
             exit 0
           fi
 
-          VERSION="v${MAVEN_LATEST_VERSION}"
+          VERSION="v${GUTHUB_LATEST_VERSION}"
 
           echo "${VERSION}" > VALD_CLIENT_CLJ_VERSION
 

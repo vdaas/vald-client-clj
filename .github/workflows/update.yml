@@ -39,7 +39,7 @@ jobs:
             exit 0
           fi
 
-          VERSION="v${GUTHUB_LATEST_VERSION}"
+          VERSION="v${GITHUB_LATEST_VERSION}"
 
           echo "${VERSION}" > VALD_CLIENT_CLJ_VERSION
 

@@ -80,3 +80,13 @@ valdcli: $(TARGET_JAR)
 ## Execute test
 test: $(TEST_DATASET_PATH)
     ./lein test
+
+.PHONY: ci/deps/install
+## install deps for CI environment
+ci/deps/install:
+	@echo "Nothing do be done"
+
+.PHONY: ci/deps/update
+## update deps for CI environment
+ci/deps/update:
+	@echo "Nothing do be done"

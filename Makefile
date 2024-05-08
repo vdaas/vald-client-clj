@@ -1,11 +1,27 @@
 XMS = 2g
 XMX = 6g
 
+REPO       ?= vdaas
+NAME        = vald
+VALDREPO    = github.com/$(REPO)/$(NAME)
+LANGUAGE    = clj
+PKGNAME     = $(NAME)-client-$(LANGUAGE)
+PKGREPO     = github.com/$(REPO)/$(PKGNAME)
+
+VALD_DIR    = vald
+VALD_SHA    = VALD_SHA
+VALD_CLIENT_CLJ_VERSION = VALD_CLIENT_CLJ_VERSION
+VALD_CHECKOUT_REF ?= main
+
 VERSION=$(shell cat VALD_CLIENT_CLJ_VERSION)
 
 NATIVE_IMAGE_CONFIG_OUTPUT_DIR=native-config
 
 TARGET_JAR=target/vald-client-clj-$(VERSION)-standalone.jar
+
+TEST_DATASET_PATH = wordvecs1000.json
+
+LEIN_PATH = ./lein
 
 .PHONY: all
 all: clean
@@ -43,12 +59,12 @@ profile/native-image-config: \
 $(NATIVE_IMAGE_CONFIG_OUTPUT_DIR):
 	mkdir -p $@
 
-lein:
+$(LEIN_PATH):
 	curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein \
 	&& chmod a+x lein \
 	&& ./lein version
 
-$(TARGET_JAR): src cmd
+$(TARGET_JAR): $(LEIN_PATH) src cmd
 	lein with-profile +cmd uberjar
 
 valdcli: $(TARGET_JAR)
@@ -73,3 +89,73 @@ valdcli: $(TARGET_JAR)
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \
 	-J-Xmx$(XMX)
+
+$(VALD_DIR):
+	git clone https://$(VALDREPO) $(VALD_DIR)
+
+.PHONY: pom
+## update dependencies
+pom: $(LEIN_PATH)
+	./lein pom
+
+.PHONY: proto
+## build proto
+proto: \
+	$(VALD_DIR) \
+	pom
+
+.PHONY: vald/checkout
+## checkout vald repository
+vald/checkout: $(VALD_DIR)
+	cd $(VALD_DIR) && git checkout $(VALD_CHECKOUT_REF)
+
+.PHONY: vald/origin/sha/print
+## print origin VALD_SHA value
+vald/origin/sha/print: $(VALD_DIR)
+	@cd $(VALD_DIR) && git rev-parse HEAD | tr -d '\n'
+
+.PHONY: vald/sha/print
+## print VALD_SHA value
+vald/sha/print:
+	@cat $(VALD_SHA)
+
+.PHONY: vald/sha/update
+## update VALD_SHA value
+vald/sha/update: $(VALD_DIR)
+	(cd $(VALD_DIR); git rev-parse HEAD | tr -d '\n' > ../$(VALD_SHA))
+
+.PHONY: vald/client/version/print
+## print VALD_CLIENT_JAVA_VERSION value
+vald/client/version/print:
+	@cat $(VALD_CLIENT_CLJ_VERSION)
+
+.PHONY: vald/client/version/update
+## update VALD_CLIENT_JAVA_VERSION value
+vald/client/version/update: $(VALD_DIR)
+	cp $(VALD_DIR)/versions/VALD_VERSION $(VALD_CLIENT_CLJ_VERSION)
+
+.PHONY: test
+## Execute test
+test: $(LEIN_PATH) $(TEST_DATASET_PATH)
+	./lein test
+
+$(TEST_DATASET_PATH):
+	curl -L https://raw.githubusercontent.com/rinx/word2vecjson/master/data/wordvecs1000.json -o $(TEST_DATASET_PATH)
+
+.PHONY: ci/deps/install
+## install deps for CI environment
+ci/deps/install: $(LEIN_PATH)
+
+.PHONY: ci/deps/update
+## update deps for CI environment
+ci/deps/update:
+	@echo "Nothing do be done"
+
+.PHONY: ci/package/prepare
+## prepare for publich
+ci/package/prepare: ci/deps/install
+
+.PHONY: ci/package/publish
+## publich packages
+ci/package/publish: ci/deps/install
+	./lein deploy clojars

@@ -1,85 +1,85 @@
-name: E2E test and Deploy to Clojars
-on:
-  push:
-    branches:
-      - main
-    tags:
-      - '*.*.*'
-      - 'v*.*.*'
-      - '*.*.*-*'
-      - 'v*.*.*-*'
-  pull_request:
-
-jobs:
-  e2e:
-    name: Run E2E Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code.
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
-          chmod a+x lein
-          sudo ./lein version
-      - uses: rinx/setup-k3d@v0.0.4
-        with:
-          version: latest
-          name: vald
-          agents: 1
-      - name: check k3d
-        run: |
-          kubectl cluster-info
-      - uses: azure/setup-helm@v3
-      - name: Helm version
-        run: |
-          helm version
-      - name: deploy Vald
-        run: |
-          helm repo add vald https://vald.vdaas.org/charts
-          helm install \
-            --values ${VALUES} \
-            --set defaults.image.tag=nightly \
-            --set agent.ngt.dimension=300 \
-            --set agent.ngt.auto_index_length=2 \
-            --set agent.minReplicas=1 \
-            --set gateway.lb.enabled=false \
-            --set discoverer.enabled=false \
-            --set manager.index.enabled=false \
-            --generate-name vald/vald
-          sleep 3
-          kubectl wait --for=condition=ready pod -l app=vald-agent --timeout=3m
-          kubectl get pods
-        env:
-          VALUES: https://raw.githubusercontent.com/vdaas/vald/main/.github/helm/values/values-lb.yaml
-      - name: Download data
-        run: |
-          curl -OL https://raw.githubusercontent.com/rinx/word2vecjson/master/data/wordvecs1000.json
-      - name: run tests
-        run: |
-          kubectl port-forward statefulset/vald-agent 8081:8081 &
-          pid=$!
-
-          ./lein test
-
-          kill $pid
-  deploy:
-    if: startsWith( github.ref, 'refs/tags/')
-    needs:
-      - e2e
-    name: Deploy to Clojars
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code.
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
-          chmod a+x lein
-          sudo ./lein version
-      - name: Deploy
-        run: |
-          ./lein deploy clojars
-        env:
-          CLOJARS_USER: ${{ secrets.CLOJARS_USER }}
-          CLOJARS_PASS: ${{ secrets.CLOJARS_PASS }}
+# name: E2E test and Deploy to Clojars
+# on:
+#   push:
+#     branches:
+#       - main
+#     tags:
+#       - '*.*.*'
+#       - 'v*.*.*'
+#       - '*.*.*-*'
+#       - 'v*.*.*-*'
+#   pull_request:
+#
+# jobs:
+#   e2e:
+#     name: Run E2E Tests
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Check out code.
+#         uses: actions/checkout@v3
+#       - name: Install dependencies
+#         run: |
+#           curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+#           chmod a+x lein
+#           sudo ./lein version
+#       - uses: rinx/setup-k3d@v0.0.4
+#         with:
+#           version: latest
+#           name: vald
+#           agents: 1
+#       - name: check k3d
+#         run: |
+#           kubectl cluster-info
+#       - uses: azure/setup-helm@v3
+#       - name: Helm version
+#         run: |
+#           helm version
+#       - name: deploy Vald
+#         run: |
+#           helm repo add vald https://vald.vdaas.org/charts
+#           helm install \
+#             --values ${VALUES} \
+#             --set defaults.image.tag=nightly \
+#             --set agent.ngt.dimension=300 \
+#             --set agent.ngt.auto_index_length=2 \
+#             --set agent.minReplicas=1 \
+#             --set gateway.lb.enabled=false \
+#             --set discoverer.enabled=false \
+#             --set manager.index.enabled=false \
+#             --generate-name vald/vald
+#           sleep 3
+#           kubectl wait --for=condition=ready pod -l app=vald-agent --timeout=3m
+#           kubectl get pods
+#         env:
+#           VALUES: https://raw.githubusercontent.com/vdaas/vald/main/.github/helm/values/values-lb.yaml
+#       - name: Download data
+#         run: |
+#           curl -OL https://raw.githubusercontent.com/rinx/word2vecjson/master/data/wordvecs1000.json
+#       - name: run tests
+#         run: |
+#           kubectl port-forward statefulset/vald-agent 8081:8081 &
+#           pid=$!
+#
+#           ./lein test
+#
+#           kill $pid
+#   deploy:
+#     if: startsWith( github.ref, 'refs/tags/')
+#     needs:
+#       - e2e
+#     name: Deploy to Clojars
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Check out code.
+#         uses: actions/checkout@v3
+#       - name: Install dependencies
+#         run: |
+#           curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+#           chmod a+x lein
+#           sudo ./lein version
+#       - name: Deploy
+#         run: |
+#           ./lein deploy clojars
+#         env:
+#           CLOJARS_USER: ${{ secrets.CLOJARS_USER }}
+#           CLOJARS_PASS: ${{ secrets.CLOJARS_PASS }}

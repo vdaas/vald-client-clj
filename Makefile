@@ -7,6 +7,8 @@ NATIVE_IMAGE_CONFIG_OUTPUT_DIR=native-config
 
 TARGET_JAR=target/vald-client-clj-$(VERSION)-standalone.jar
 
+TEST_DATASET_PATH = wordvecs1000.json
+
 .PHONY: all
 all: clean
 
@@ -73,3 +75,8 @@ valdcli: $(TARGET_JAR)
 	-J-Dclojure.spec.skip-macros=true \
 	-J-Xms$(XMS) \
 	-J-Xmx$(XMX)
+
+.PHONY: test
+## Execute test
+test: $(TEST_DATASET_PATH)
+    ./lein test

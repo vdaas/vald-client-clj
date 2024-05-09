@@ -27,6 +27,6 @@ jobs:
     with:
       client_type: clj
     secrets:
-      CI_USER: ${{ secrets.DISPATCH_USER }}
-      CI_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+      CI_USER: ${{ secrets.VALDCLI_USER }}
+      CI_TOKEN: ${{ secrets.VALDCLI_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}

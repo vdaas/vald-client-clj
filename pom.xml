@@ -4,7 +4,7 @@
   <groupId>vald-client-clj</groupId>
   <artifactId>vald-client-clj</artifactId>
   <packaging>jar</packaging>
-  <version>v1.7.12</version>
+  <version>v1.2.4</version>
   <name>vald-client-clj</name>
   <description>A client library for Vald.</description>
   <url>https://github.com/vdaas/vald-client-clj</url>
@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>af583e039c87f0b6f978b4567b1c78ad7a46b209</tag>
+    <tag>8cd0d4441aa77af3156959da9ee6c2174a78703e</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -71,12 +71,12 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.59.1</version>
+      <version>1.58.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.59.1</version>
+      <version>1.58.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.vdaas.vald</groupId>
       <artifactId>vald-client-java</artifactId>
-      <version>1.7.12</version>
+      <version>1.2.4</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>

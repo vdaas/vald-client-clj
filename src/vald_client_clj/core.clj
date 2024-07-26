@@ -3,7 +3,7 @@
   (:refer-clojure :exclude [update remove])
   (:import
    [org.vdaas.vald.api.v1.vald
-    InsertGrpc SearchGrpc UpdateGrpc RemoveGrpc UpsertGrpc ObjectGrpc]
+    InsertGrpc SearchGrpc UpdateGrpc RemoveGrpc UpsertGrpc ObjectGrpc IndexGrpc]
    [org.vdaas.vald.api.v1.agent.core AgentGrpc]
    [org.vdaas.vald.api.v1.payload
     Insert$Request Insert$MultiRequest Insert$Config
@@ -806,7 +806,7 @@
     (when (false? (.isShutdown channel))
       (let [req (-> (Empty/newBuilder)
                     (.build))]
-        (-> (AgentGrpc/newBlockingStub channel)
+        (-> (IndexGrpc/newBlockingStub channel)
             (.indexInfo req)
             (index-info-count->map))))))
 

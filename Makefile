@@ -13,6 +13,9 @@ VALD_SHA    = VALD_SHA
 VALD_CLIENT_CLJ_VERSION = VALD_CLIENT_CLJ_VERSION
 VALD_CHECKOUT_REF ?= main
 
+K3D_MAKEFILE_URL=https://raw.githubusercontent.com/vdaas/vald/main/Makefile.d/k3d.mk
+K3D_MAKEFILE=Makefile.d/k3d.mk
+
 VERSION=$(shell cat VALD_CLIENT_CLJ_VERSION)
 
 NATIVE_IMAGE_CONFIG_OUTPUT_DIR=native-config
@@ -147,7 +150,7 @@ ci/deps/install: $(LEIN_PATH)
 
 .PHONY: ci/deps/update
 ## update deps for CI environment
-ci/deps/update: pom
+ci/deps/update: pom sync/k3d/mk
 
 .PHONY: ci/package/prepare
 ## prepare for publich
@@ -158,13 +161,11 @@ ci/package/prepare: ci/deps/install
 ci/package/publish: ci/deps/install
 	./lein deploy clojars
 
-K3D_MAKEFILE_URL=https://raw.githubusercontent.com/vdaas/vald/main/Makefile.d/k3d.mk
-K3D_MAKEFILE=Makefile.d/k3d.mk
-
 Makefile.d:
 	mkdir -p Makefile.d
 
-$(K3D_MAKEFILE): Makefile.d
-	@curl -fsSLo $(K3D_MAKEFILE) $(K3D_MAKEFILE_URL)
+sync/k3d/mk: Makefile.d
+	rm -rf $(K3D_MAKEFILE)
+	curl -fsSLo $(K3D_MAKEFILE) $(K3D_MAKEFILE_URL)
 
 include $(K3D_MAKEFILE)

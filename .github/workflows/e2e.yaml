@@ -26,6 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Get base branch name
+        run: |
+          echo "${{ github.event.pull_request.base.ref }}"
       - uses: vdaas/vald-client-ci/.github/actions/e2e@main
         with:
           client_type: clj

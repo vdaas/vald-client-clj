@@ -19,7 +19,8 @@ on:
   push:
     branches:
       - main
-  pull_request:
+      - fix/verify-set-base-ref
+  # pull_request:
 
 jobs:
   e2e:

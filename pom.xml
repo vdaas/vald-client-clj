@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>e947367b8bbd694750bf87f24e7a70e28f11fd2d</tag>
+    <tag>c8b45f01355e03f19c7de7003e52404a380925f2</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -66,7 +66,7 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.11.4</version>
+      <version>1.11.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
@@ -91,7 +91,7 @@
     <dependency>
       <groupId>build.buf</groupId>
       <artifactId>protovalidate</artifactId>
-      <version>0.3.0</version>
+      <version>0.1.8</version>
     </dependency>
     <dependency>
       <groupId>org.vdaas.vald</groupId>

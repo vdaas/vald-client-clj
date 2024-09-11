@@ -71,27 +71,27 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.58.0</version>
+      <version>1.64.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.58.0</version>
+      <version>1.64.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.58.0</version>
+      <version>1.64.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.58.0</version>
+      <version>1.64.0</version>
     </dependency>
     <dependency>
       <groupId>build.buf</groupId>
       <artifactId>protovalidate</artifactId>
-      <version>0.3.0</version>
+      <version>0.2.1</version>
     </dependency>
     <dependency>
       <groupId>org.vdaas.vald</groupId>

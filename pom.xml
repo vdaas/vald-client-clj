@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>342029fb0c5447429cd421475f72a74a7b4869d0</tag>
+    <tag>552ab74d0758d3f27304713a1d19c58226d60acc</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -91,7 +91,7 @@
     <dependency>
       <groupId>build.buf</groupId>
       <artifactId>protovalidate</artifactId>
-      <version>0.3.0</version>
+      <version>0.1.8</version>
     </dependency>
     <dependency>
       <groupId>org.vdaas.vald</groupId>

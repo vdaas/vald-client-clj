@@ -89,6 +89,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       <version>1.64.0</version>
 =======
       <version>1.66.0</version>
@@ -99,6 +100,9 @@
 =======
       <version>1.66.0</version>
 >>>>>>> 2c94320 (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#184))
+=======
+      <version>1.66.0</version>
+>>>>>>> fd4c779 (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#187))
     </dependency>
     <dependency>
       <groupId>build.buf</groupId>

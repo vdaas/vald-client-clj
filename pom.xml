@@ -81,7 +81,11 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
+<<<<<<< HEAD
       <version>1.64.0</version>
+=======
+      <version>1.63.0</version>
+>>>>>>> a42d11b (fix: pom.xml to reduce vulnerabilities (#190))
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>

@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>98a0214811d4e642bab40197b4ea6f4f5f56bacf</tag>
+    <tag>ef786626af13e9d9d1a8a25149408ce17ad257ea</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>

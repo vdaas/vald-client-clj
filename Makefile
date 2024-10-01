@@ -101,6 +101,7 @@ $(VALD_DIR):
 .PHONY: pom
 ## update dependencies
 pom: $(LEIN_PATH)
+	yq -o=tsv '.project.dependencies.dependency[] | [.groupId, .artifactId, .version] | join(" ")' pom.xml | while read groupId artifactId version; do sed -i -e "s@$$groupId/$$artifactId \".*\"@$$groupId/$$artifactId \"$$version\"@g" project.clj; done
 	./lein pom
 
 .PHONY: proto
@@ -175,4 +176,4 @@ sync/k3d/mk: Makefile.d
 	rm -rf $(K3D_MAKEFILE)
 	curl -fsSLo $(K3D_MAKEFILE) $(K3D_MAKEFILE_URL)
 
-include $(K3D_MAKEFILE)
+include $(K3D_MAKEFILE) $(YQ_MAKEFILE)

@@ -176,4 +176,4 @@ sync/k3d/mk: Makefile.d
 	rm -rf $(K3D_MAKEFILE)
 	curl -fsSLo $(K3D_MAKEFILE) $(K3D_MAKEFILE_URL)
 
-include $(K3D_MAKEFILE) $(YQ_MAKEFILE)
+include $(K3D_MAKEFILE)

@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>4e4b0e6fd2d1ced27c05d9137834dc17391d2d9f</tag>
+    <tag>2f3fe6b97c483d0ba624c15b6f42b079a256c1f2</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -86,7 +86,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.66.0</version>
+      <version>1.58.0</version>
     </dependency>
     <dependency>
       <groupId>build.buf</groupId>

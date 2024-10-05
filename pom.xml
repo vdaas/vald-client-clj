@@ -91,7 +91,7 @@
     <dependency>
       <groupId>build.buf</groupId>
       <artifactId>protovalidate</artifactId>
-      <version>0.1.8</version>
+      <version>0.4.2</version>
     </dependency>
     <dependency>
       <groupId>org.vdaas.vald</groupId>

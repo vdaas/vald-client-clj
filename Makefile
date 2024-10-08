@@ -101,6 +101,7 @@ $(VALD_DIR):
 .PHONY: pom
 ## update dependencies
 pom: $(LEIN_PATH)
+	yq -o=tsv '.project.dependencies.dependency[] | [.groupId, .artifactId, .version] | join(" ")' pom.xml | while read groupId artifactId version; do sed -i -e "s@$$groupId/$$artifactId \".*\"@$$groupId/$$artifactId \"$$version\"@g" project.clj; done
 	./lein pom
 
 .PHONY: proto

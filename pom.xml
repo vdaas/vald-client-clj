@@ -4,7 +4,7 @@
   <groupId>vald-client-clj</groupId>
   <artifactId>vald-client-clj</artifactId>
   <packaging>jar</packaging>
-  <version>v1.2.4</version>
+  <version>v1.7.13</version>
   <name>vald-client-clj</name>
   <description>A client library for Vald.</description>
   <url>https://github.com/vdaas/vald-client-clj</url>
@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>8cd0d4441aa77af3156959da9ee6c2174a78703e</tag>
+    <tag>8869c39b114e4bdb882a5683990e9693c295f59b</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -66,27 +66,27 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.11.4</version>
+      <version>1.12.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.64.0</version>
+      <version>1.66.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.64.0</version>
+      <version>1.66.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.64.0</version>
+      <version>1.66.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.64.0</version>
+      <version>1.66.0</version>
     </dependency>
     <dependency>
       <groupId>build.buf</groupId>
@@ -96,12 +96,12 @@
     <dependency>
       <groupId>org.vdaas.vald</groupId>
       <artifactId>vald-client-java</artifactId>
-      <version>1.2.4</version>
+      <version>1.7.13</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-okhttp</artifactId>
-      <version>1.58.0</version>
+      <version>1.66.0</version>
       <exclusions>
         <exclusion>
           <artifactId>grpc-core</artifactId>

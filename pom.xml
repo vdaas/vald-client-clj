@@ -18,7 +18,7 @@
     <url>https://github.com/vdaas/vald-client-clj</url>
     <connection>scm:git:git://github.com/vdaas/vald-client-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vdaas/vald-client-clj.git</developerConnection>
-    <tag>77d8f40e9651a2ba77577ea7a8d51c1e7ededbf2</tag>
+    <tag>8869c39b114e4bdb882a5683990e9693c295f59b</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -66,71 +66,27 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-<<<<<<< HEAD
-      <version>1.11.4</version>
-=======
       <version>1.12.0</version>
->>>>>>> 98a0214 (fix: upgrade org.clojure:clojure from 1.11.1 to 1.12.0 (#199))
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.64.0</version>
+      <version>1.66.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.64.0</version>
+      <version>1.66.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-<<<<<<< HEAD
-      <version>1.64.0</version>
-=======
-      <version>1.63.0</version>
->>>>>>> a42d11b (fix: pom.xml to reduce vulnerabilities (#190))
+      <version>1.66.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <version>1.64.0</version>
-=======
       <version>1.66.0</version>
->>>>>>> 3f34bcc (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#176))
-=======
-      <version>1.66.0</version>
->>>>>>> e873bf5 (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#181))
-=======
-      <version>1.66.0</version>
->>>>>>> 2c94320 (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#184))
-=======
-      <version>1.66.0</version>
->>>>>>> fd4c779 (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#187))
-=======
-      <version>1.66.0</version>
->>>>>>> dcc425f (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#193))
-=======
-      <version>1.66.0</version>
->>>>>>> 495da9c (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#196))
-=======
-      <version>1.66.0</version>
->>>>>>> 4e4b0e6 (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#203))
-=======
-      <version>1.66.0</version>
->>>>>>> 2f3fe6b (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#207))
-=======
-      <version>1.66.0</version>
->>>>>>> 6a75e21 (fix: upgrade io.grpc:grpc-stub from 1.58.0 to 1.66.0 (#211))
     </dependency>
     <dependency>
       <groupId>build.buf</groupId>
@@ -145,7 +101,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-okhttp</artifactId>
-      <version>1.58.0</version>
+      <version>1.66.0</version>
       <exclusions>
         <exclusion>
           <artifactId>grpc-core</artifactId>

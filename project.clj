@@ -1,5 +1,5 @@
 (defproject vald-client-clj #=(clojure.string/trim #=(slurp "VALD_CLIENT_CLJ_VERSION"))
-  :description "A client library for Vald."
+  :description "DEPRECATED: This project is no longer maintained. Please use vald-client-java instead."
   :url "https://github.com/vdaas/vald-client-clj"
   :license {:name "Apache License 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
@@ -14,10 +14,7 @@
                  [io.grpc/grpc-protobuf "1.66.0"]
                  [io.grpc/grpc-stub "1.66.0"]
                  [build.buf/protovalidate "0.2.1"]
-                 [org.vdaas.vald/vald-client-java
-                  #=(subs
-                      #=(clojure.string/trim
-                          #=(slurp "VALD_CLIENT_CLJ_VERSION")) 1)]]
+                 [org.vdaas.vald/vald-client-java "1.7.13"]]
   :repl-options {:init-ns vald-client-clj.core}
   :profiles {:dev
              {:dependencies [[io.grpc/grpc-okhttp "1.66.0"

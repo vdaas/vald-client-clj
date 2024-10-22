@@ -6,7 +6,7 @@
   <packaging>jar</packaging>
   <version>v1.7.13</version>
   <name>vald-client-clj</name>
-  <description>A client library for Vald.</description>
+  <description>DEPRECATED: This project is no longer maintained. Please use vald-client-java instead."</description>
   <url>https://github.com/vdaas/vald-client-clj</url>
   <licenses>
     <license>
